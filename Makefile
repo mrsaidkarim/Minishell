@@ -1,7 +1,7 @@
 NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-HEADER = headers/minishell.h
+HEADER = included/minishell.h
 RM = rm -rf 
 
 READLINE_L = $(shell brew --prefix readline)/lib
@@ -13,7 +13,7 @@ OBJS = ${SRCS:.c=.o}
 
 all : ${NAME}
 
-%.o : %.c 
+%.o : %.c ${HEADER}
 	${CC} ${CFLAG} -I ${READLINE_I} -c $< -o $@
 
 ${NAME} : ${OBJS}
