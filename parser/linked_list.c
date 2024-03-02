@@ -17,7 +17,7 @@ t_node	*ft_creat_node_cmd(char *str, size_t len, t_token)
 	return (new);
 }
 
-void	ft_add_to_back(t_node **head, t_node *new)
+void	ft_add_back(t_node **head, t_node *new)
 {
 	t_node	*tmp;
 
