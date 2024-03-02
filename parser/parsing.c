@@ -30,6 +30,7 @@ void	print_error_syntax(char *str, t_token tok)
 	else
 		printf("bash: %s `%c'\n", UNEXPECTED_TOK, str[0]);
 }
+
 int	check_syntax(char *str)
 {
 	t_token tok;

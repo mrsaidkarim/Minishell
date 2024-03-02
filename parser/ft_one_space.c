@@ -6,6 +6,8 @@ char	*ft_one_space(char *str)
     int consecutive_spaces = 0;
 	int len = ft_strlen(str);
     char *result = malloc(len + 1);
+	if (!result)
+		allocate_error(strerror(errno));
 	int i = -1;
 
     while (++i < len)
