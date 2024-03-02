@@ -53,4 +53,16 @@ char *parsing(char *input)
 	if (!check_syntax(str))
 		return (NULL);
 	return (str);
-}	
+}
+
+void	init(char *line)
+{
+	int	index;
+
+	index = 0;
+	while (line[index])
+	{
+		if (ft_check_delim(line, &index))
+			ft_create_node()
+	}
+}
