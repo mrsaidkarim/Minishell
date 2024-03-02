@@ -1,8 +1,10 @@
 #include "../included/minishell.h"
 
 
-void	alocate_error(char *str)
+void	allocate_error(char *str)
 {
-	printf("%s\n", str);
+	ft_putstr_fd("bash : malloc: ", 2);
+	ft_putstr_fd(str, 2);
+	ft_putstr_fd("\n", 2);
 	exit(1);
 }
