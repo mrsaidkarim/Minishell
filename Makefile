@@ -15,9 +15,7 @@ SRCS = minishell.c \
 	   parser/ft_one_space.c \
 	   libft/ft_strtrim.c \
 	   libft/ft_strlen.c \
-
-
-
+	   memory/alocate_error.c \
 
 OBJS = ${SRCS:.c=.o}
 
