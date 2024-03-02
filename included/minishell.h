@@ -32,7 +32,6 @@ typedef enum s_token
     TOKEN_DOLLAR,
 }	t_token;
 
-# define malloc(size_t) NULL
 typedef struct s_env
 {
 	char			*var;
@@ -46,7 +45,16 @@ typedef struct s_list
 	struct s_list	*prev;
 	char			*content;
 	t_token			tok;
+    int             status;
 }	t_list;
+
+
+
+
+// typedef struct s_data
+// {
+//     t_env *env;
+// };
 
 
 int		ft_strcmp(const char *s1, const char *s2);
