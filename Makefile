@@ -16,6 +16,8 @@ SRCS = minishell.c \
 	   libft/ft_strtrim.c \
 	   libft/ft_strlen.c \
 	   memory/alocate_error.c \
+	   parser/linked_list.c \
+	   libft/ft_substr.c \
 
 OBJS = ${SRCS:.c=.o}
 

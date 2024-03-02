@@ -11,6 +11,7 @@
 #include <signal.h>
 #include <stdbool.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 #define UNEXPECTED_TOK "syntax error near unexpected token"
 
@@ -48,11 +49,6 @@ typedef struct s_node
     t_node          *lchild;
 }	t_node;
 
-// typedef struct s_data
-// {
-//     t_env *env;
-// };
-
 int		ft_strcmp(const char *s1, const char *s2);
 char	**ft_split(char const *str, char c);
 void	ft_putstr_fd(char *s, int fd);
@@ -64,5 +60,10 @@ char	*parsing(char *input);
 char	*function_one_space(char *str);
 char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_strdup(const char *s1);
+void	allocate_error(char *str);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+t_node	*ft_create_cmd(char *str, size_t len, t_token tok);
+void	ft_add_back(t_node **head, t_node *new);
+
 
 #endif

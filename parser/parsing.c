@@ -44,17 +44,6 @@ int	check_syntax(char *str)
 	return (1);
 }
 
-char *parsing(char *input)
-{
-	char *str;
-	t_token tok;
-
-	str = function_one_space(input);
-	if (!check_syntax(str))
-		return (NULL);
-	return (str);
-}
-
 int	ft_check_delim(char *str, int i)
 {
 	if (str[i] == '|' && str[i + 1] == '|')
@@ -67,7 +56,7 @@ int	ft_check_delim(char *str, int i)
 		return (0);
 }
 
-t_node	*init(char *line)
+t_node	*build_list(char *line)
 {
 	int		index;
 	t_node	*head;
@@ -75,6 +64,7 @@ t_node	*init(char *line)
 	int		len;
 
 	index = 0;
+	head = NULL;
 	while (line[index])
 	{
 		if (ft_check_delim(line, index))
@@ -90,8 +80,27 @@ t_node	*init(char *line)
 				len++;
 			tmp = ft_create_cmd(line + index, len, check_tok(line + index));
 			ft_add_back(&head, tmp);
-			index += len;
+			index = len;
 		}
 	}
 	return (head);
+}
+
+char *parsing(char *input)
+{
+	t_node *head;
+	char *str;
+	t_token tok;
+
+	str = function_one_space(input);
+	if (!check_syntax(str))
+		return (NULL);
+	head = build_list(str);
+	while (head)
+	{
+		printf("%s %d\n", head->pre_cmd, head->tok);
+		head = head->rchild;
+	}
+	exit(1);
+	return (str);
 }

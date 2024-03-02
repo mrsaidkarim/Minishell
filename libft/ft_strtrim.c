@@ -29,7 +29,7 @@ char	*ft_strtrim(char const *s1, char const *set)
 		end--;
 	str = (char *)malloc(sizeof(char) * (end - start + 1));
 	if (!str)
-		return (NULL);
+		allocate_error(strerror(errno));
 	i = 0;
 	while (start < end)
 		str[i++] = s1[start++];
