@@ -14,39 +14,39 @@
 
 #define UNEXPECTED_TOK "syntax error near unexpected token"
 
+typedef struct s_node t_node;
+
 typedef enum s_token
 {
-    TOKEN_EXPR,
-    TOKEN_REDIR_IN,
-    TOKEN_REDIR_OUT,
-    TOKEN_REDIR_APPEND,
-    TOKEN_HEREDOC,
-    TOKEN_PIPE,
-    TOKEN_AND,
-    TOKEN_OR,
-    TOKEN_SPACE,
-    TOKEN_BRKT_OPEN,
-    TOKEN_BRKT_CLOSE,
-    TOKEN_D_Q,
-    TOKEN_S_Q,
-    TOKEN_DOLLAR,
+    EXPR,
+    REDIR_IN,
+    REDIR_OUT,
+    REDIR_APPEND,
+    HEREDOC,
+    PIPE,
+    AND,
+    OR,
+    BRKT_OPEN,
+    BRKT_CLOSE,
+    DOLLAR,
 }	t_token;
 
-# define malloc(size_t) NULL
 typedef struct s_env
 {
+    char            *env;
 	char			*var;
 	char			*content;
 	struct s_env	*next;
 }	t_env;
 
-typedef struct s_list
+typedef struct s_node
 {
-	struct s_list	*next;
-	struct s_list	*prev;
-	char			*content;
+	char			*pre_cmd;
+    char            **cmd;
 	t_token			tok;
-}	t_list;
+    t_node          *rchild;
+    t_node          *lchild;
+}	t_node;
 
 
 int		ft_strcmp(const char *s1, const char *s2);
