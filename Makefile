@@ -9,10 +9,8 @@ READLINE_I = $(shell brew --prefix readline)/include
 
 SRCS = minishell.c \
 	   libft/ft_strcmp.c \
-	   builtins/echo.c \
 	   libft/ft_split.c \
 	   libft/ft_putstr_fd.c \
-	   builtins/pwd.c      \
 	   parser/parsing.c \
 	   parser/ft_one_space.c \
 	   libft/ft_strtrim.c \
