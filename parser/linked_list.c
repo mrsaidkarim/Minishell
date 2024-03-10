@@ -1,6 +1,7 @@
 #include "../included/minishell.h"
 
-t_node	*ft_create_cmd(char *str, size_t len, t_token tok)
+// create a command node.
+t_node	*ft_create_cmd(char *str, int len, t_token tok, t_redir *redlist)
 {
 	t_node	*new;
 
@@ -12,15 +13,21 @@ t_node	*ft_create_cmd(char *str, size_t len, t_token tok)
 		allocate_error(strerror(errno));
 	new->cmd = NULL;
 	new->tok = tok;
+	new->precedence = ft_precedence(tok);
+	if (tok == EXPR)
+		new->redirections = redlist;
 	new->rchild = NULL;
 	new->lchild = NULL;
 	return (new);
 }
 
-void	ft_add_back(t_node **head, t_node *new)
+// Add a command node to the end of a linked list
+int	ft_add_back(t_node **head, t_node *new)
 {
 	t_node	*tmp;
 
+	if (!new)
+		return (-1);
 	if (!*head)
 		*head = new;
 	else
@@ -31,4 +38,40 @@ void	ft_add_back(t_node **head, t_node *new)
 		tmp->rchild = new;
 		new->lchild = tmp;
 	}
+	return (1);
+}
+
+// create a redirection node
+t_redir	*ft_create_rednode(char *file_name, t_token tok)
+{
+	t_redir	*rednode;
+
+	rednode = (t_redir *)malloc(sizeof(t_redir));
+	if (!rednode)
+		return (NULL);
+	rednode->file = file_name;
+	rednode->tok = tok;
+	rednode->lchild = NULL;
+	rednode->rchild = NULL;
+	return (rednode);
+}
+
+// Add a redirection node to the end of a linked list
+int	ft_add_red(t_redir **redhead, t_redir *rednode)
+{
+	t_redir	*tmp;
+
+	if (!rednode)
+		return (-1);
+	if (!*redhead)
+		*redhead = rednode;
+	else
+	{
+		tmp = *redhead;
+		while (tmp->rchild)
+			tmp = tmp->rchild;
+		tmp->rchild = rednode;
+		rednode->lchild = tmp;
+	}
+	return (0);
 }
