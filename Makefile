@@ -11,13 +11,16 @@ SRCS = minishell.c \
 	   libft/ft_strcmp.c \
 	   libft/ft_split.c \
 	   libft/ft_putstr_fd.c \
-	   parser/parsing.c \
-	   parser/ft_one_space.c \
 	   libft/ft_strtrim.c \
 	   libft/ft_strlen.c \
-	   memory/alocate_error.c \
-	   parser/linked_list.c \
+	   libft/ft_strdup.c \
 	   libft/ft_substr.c \
+	   memory/alocate_error.c \
+	   parser/check_syntax.c \
+	   parser/check_tokens.c \
+	   parser/start_parsing.c \
+	   parser/linked_list.c \
+	   parser/parsing.c \
 
 OBJS = ${SRCS:.c=.o}
 
