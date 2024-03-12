@@ -65,7 +65,7 @@ int	ft_prepare_cmd(char *line, int *i, t_node **head)
 
 	j = *i;
 	red = NULL;
-	while (line[*i] && !ft_check_delim(line, *i))
+	while (line[*i] && !ft_skip_for_quotes(line, i))
 	{
 		if (check_tok(line + (*i)) != EXPR)
 		{
