@@ -84,6 +84,7 @@ int	    ft_precedence(t_token token);
 t_redir	*ft_create_rednode(char *file_name, t_token tok);
 int	    ft_add_red(t_redir **redhead, t_redir *rednode);
 int	    ft_protected_word(char *line, int *i, int *len, char c);
+int	    ft_skip_for_quotes(char *line, int *i);
 int	    ft_find_bclose(char *line, int i);
 int	    ft_check_syntax_combination(char *line, int *index, int *bclose, t_token tok);
 t_node	*ft_create_cmd(char *str, int len, t_token tok, t_redir *redlist);
