@@ -50,7 +50,7 @@ int	ft_check_syntax_combination(char *line, int *index, int *bclose, t_token tok
 		(*index)++;
 	if (tok == BRKT_CLOSE)
 		return (0);
-	if (ft_check_delim(line, *index)|| !line[*index] || line[*index])
+	if (ft_check_delim(line, *index)|| !line[*index])
 	{
 		if (ft_check_delim(line, *index))
 			return (ft_print_syntax_error("near unexpected token", &line[*index], 1), -1);
