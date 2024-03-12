@@ -14,6 +14,22 @@ int	ft_find_bclose(char *line, int i)
 	return (-1);
 }
 
+/* Skips characters in the input string until the end of a quoted section.*/
+int	ft_skip_for_quotes(char *line, int *i)
+{
+	char	c;
+
+	if (line[*i] == '\"' || line[*i] == '\'')
+	{
+		c = line[*i];
+		(*i)++;
+		while (line[*i] && line[*i] != c)
+			(*i)++;
+		return (0);
+	}
+	return (ft_check_delim(line, *i));
+}
+
 // Check the syntax combination and validate the string after a delimiter.
 int	ft_check_syntax_combination(char *line, int *index, int *bclose, t_token tok)
 {
@@ -34,7 +50,7 @@ int	ft_check_syntax_combination(char *line, int *index, int *bclose, t_token tok
 		(*index)++;
 	if (tok == BRKT_CLOSE)
 		return (0);
-	if (ft_check_delim(line, *index)|| !line[*index])
+	if (ft_check_delim(line, *index)|| !line[*index] || line[*index])
 	{
 		if (ft_check_delim(line, *index))
 			return (ft_print_syntax_error("near unexpected token", &line[*index], 1), -1);
