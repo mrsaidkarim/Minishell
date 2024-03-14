@@ -11,7 +11,7 @@ int	ft_find_bclose(char *line, int i)
 		i++;
 		line++;
 	}
-	return (-1);
+	return (-2);
 }
 
 /* Skips characters in the input string until the end of a quoted section.*/
@@ -37,20 +37,20 @@ int	ft_check_syntax_combination(char *line, int *index, int *bclose, t_token tok
 
 	if (tok == BRKT_OPEN)
 	{
-		*bclose = ft_find_bclose(line + (*index), *index);
+		if (!*bclose)
+			*bclose = *index;
+		*bclose = ft_find_bclose(line + *bclose, *bclose) + 1;
 		if (*bclose == -1)
 			return (ft_print_syntax_error("unclosed parentheses", NULL, -1));
 	}
 	else if (tok == BRKT_CLOSE)
-	{
-		if (*index - 1 > *bclose)
+		if (*index > *bclose)
 			return (ft_print_syntax_error("near unexpected token", ")", 1));
-	}
 	while (ft_isspace(line[*index]))
 		(*index)++;
 	if (tok == BRKT_CLOSE)
 		return (0);
-	if (ft_check_delim(line, *index)|| !line[*index])
+	if ( (ft_check_delim(line, *index) && check_tok(line + *index) != BRKT_OPEN)|| !line[*index])
 	{
 		if (ft_check_delim(line, *index))
 			return (ft_print_syntax_error("near unexpected token", &line[*index], 1), -1);
