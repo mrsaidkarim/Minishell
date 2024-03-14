@@ -61,10 +61,10 @@ int	ft_precedence(t_token token)
 	if (token == REDIR_IN || token == REDIR_OUT
 		|| token == REDIR_APPEND || token == HEREDOC)
 		return (4);
-	else if (token == AND || token == OR)
-		return (2);
 	else if (token == PIPE)
 		return (3);
+	else if (token == AND || token == OR)
+		return (2);
 	else
 		return (1);
 }
