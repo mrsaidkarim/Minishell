@@ -21,6 +21,8 @@ SRCS = minishell.c \
 	   parser/start_parsing.c \
 	   parser/linked_list.c \
 	   parser/parsing.c \
+	   parser/infix_postfix.c\
+	   parser/building_tree.c
 
 OBJS = ${SRCS:.c=.o}
 
