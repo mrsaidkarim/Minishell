@@ -22,17 +22,32 @@ SRCS = minishell.c \
 	   parser/linked_list.c \
 	   parser/parsing.c \
 	   parser/infix_postfix.c\
-	   parser/building_tree.c
+	   parser/building_tree.c\
+	   env/copy_env.c \
+	   env/linked_env.c \
+	   execution/execution.c \
+	   execution/exec_cmd.c \
+	   memory/free_memory.c \
+	   builtins/unset.c \
+	   builtins/pwd.c \
+	   builtins/exit.c \
+	   builtins/env.c \
+	   builtins/echo.c \
+	   libft/ft_atoi.c \
+	   expander/expand.c \
+	   libft/ft_itoa.c \
+	   libft/ft_strjoin.c \
+	#    builtins/cd.c \
 
 OBJS = ${SRCS:.c=.o}
 
 all : ${NAME}
 
 %.o : %.c ${HEADER}
-	${CC} ${CFLAG} -I ${READLINE_I} -c $< -o $@
+	${CC} ${CFLAGS} -I ${READLINE_I} -c $< -o $@
 
 ${NAME} : ${OBJS}
-	${CC} ${CFLAG} ${OBJS} -o ${NAME} -L ${READLINE_L} -lreadline
+	${CC} ${CFLAGS} ${OBJS} -o ${NAME} -L ${READLINE_L} -lreadline
 
 clean :
 	${RM} ${OBJS}

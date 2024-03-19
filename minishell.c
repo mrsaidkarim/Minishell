@@ -3,29 +3,22 @@
 int main(int ac, char **av, char **env)
 {
    char *input;
-   char **cmd;
-
+//    char **cmd;
+    t_var g_var;
+    t_node *root = NULL;
+    (void)ac;
+    (void)av;
+   initialization(&g_var, env);
     while (1)
     {
         input = readline("\033[1;32m->Prompt: \033[0m");
         if (input && input[0])
         {
             add_history(input);
-            input = parsing(input);
-            if (!input)
+            root = parsing(input);
+            if (!root)
                 continue;
-            // printf("-----%s------\n", input);
-            // cmd = ft_split(input, ' ');
-            // if (!ft_strcmp("exit", cmd[0]))
-            // {
-            //     printf("exit\n");
-            //     break;
-            // }
-            // if (!ft_strcmp("echo", cmd[0]))
-            //     ft_echo(cmd);
-            // if (!ft_strcmp("pwd", cmd[0]))
-            //     ft_pwd();
-            // free(input);
+            execution(root, &g_var);
         }
     }
     rl_clear_history();

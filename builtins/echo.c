@@ -1,5 +1,4 @@
 #include "../included/minishell.h"
-// should implement the echo with falg (-n)!!!
 
 bool	option(char *str)
 {
@@ -15,11 +14,13 @@ bool	option(char *str)
 			return (false);
 	return (true);
 }
-void	ft_echo(char **cmd)
+void	ft_echo(char **cmd, t_var *var)
 {
-	int	opt = 0;
-	int i = 0;
+	int	opt;
+	int i;
 
+	i = 0;
+	opt = 0;
 	while (cmd[++i] && option(cmd[i]))
 		opt = 1;
 	while (cmd[i])
@@ -30,5 +31,5 @@ void	ft_echo(char **cmd)
 	}
 	if (!opt)
 		ft_putstr_fd("\n", 1);
-	// exit(0);
+	var->status = 0;
 }

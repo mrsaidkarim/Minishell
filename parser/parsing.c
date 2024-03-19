@@ -122,13 +122,13 @@ void displayTreeInorder(t_node *root) {
     }
 }
 
-char	*parsing(char *input)
+t_node	*parsing(char *input)
 {
 	t_node	*head;
 	char	*str;
 	t_node 	*tmp;
 	t_redir	*t;
-	t_token	tok;
+	// t_token	tok;
 
 	head = NULL;
 	str = ft_clean_input(input);
@@ -156,5 +156,6 @@ char	*parsing(char *input)
 		head = head->rchild;
 	ft_build_tree(head);
 	displayTreeInorder(head);
-	return (str);
+	printf("------------tree------------\n");
+	return (head);
 }
