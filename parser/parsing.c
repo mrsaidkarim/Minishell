@@ -113,10 +113,21 @@ int	ft_build_cmds(char *line, t_node **head)
 	return (0);
 }
 
+// display the tree
+void displayTreeInorder(t_node *root) {
+    if (root != NULL) {
+        displayTreeInorder(root->lchild);
+        printf("|%s %d|", root->pre_cmd, root->tok);
+        displayTreeInorder(root->rchild);
+    }
+}
+
 char	*parsing(char *input)
 {
 	t_node	*head;
 	char	*str;
+	t_node 	*tmp;
+	t_redir	*t;
 	t_token	tok;
 
 	head = NULL;
@@ -125,16 +136,25 @@ char	*parsing(char *input)
 		return (NULL);
 	if (ft_build_cmds(str, &head) == -1)
 		return (NULL);
-	while (head)
+	head = ft_infix_postfix(&head);
+	printf("------------------------\n");
+	tmp = head;
+	while (tmp)
 	{
-		printf("|%s|, red:", head->pre_cmd);
-		while (head->redirections)
+		printf("|%s %d|, red:", tmp->pre_cmd, tmp->tok);
+		t = tmp->redirections;
+		while (t)
 		{
-			printf("%s|,", head->redirections->file);
-			head->redirections = head->redirections->rchild;
+			printf("%s|,", t->file);
+			t = t->rchild;
 		}
 		printf("\n");
-		head = head->rchild;
+		tmp = tmp->rchild;
 	}
+	printf("------------tree------------\n");
+	while(head->rchild)
+		head = head->rchild;
+	ft_build_tree(head);
+	displayTreeInorder(head);
 	return (str);
 }
