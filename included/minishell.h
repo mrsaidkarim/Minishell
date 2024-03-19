@@ -90,5 +90,8 @@ int	    ft_check_syntax_combination(char *line, int *index, int *bclose, t_token
 t_node	*ft_create_cmd(char *str, int len, t_token tok, t_redir *redlist);
 int	    ft_add_back(t_node **head, t_node *new);
 char    *parsing(char *input);
+t_node	*ft_infix_postfix(t_node **head);
+t_node	*ft_infix_postfix(t_node **head);
+void	ft_build_tree(t_node *head);
 
 #endif
