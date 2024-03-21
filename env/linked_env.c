@@ -31,3 +31,33 @@ void	ft_add_env(t_env **head, t_env *new)
 		tmp->next = new;
 	}
 }
+
+// Searches for an environment variable by its key and returns a pointer to its node.
+t_env	*ft_env_search(t_env *env, char *key)
+{
+	while (env)
+	{
+		if (!strcmp(env->var, key))
+			return (env);
+		env = env->next;
+	}
+	return (NULL);
+}
+
+// Replaces the value of an environment variable with a new value.
+int	ft_env_replace(t_env *env, char *key, char *value)
+{
+    char    *new_env;
+    char    *tmp;
+
+	if (!env)
+		return (-1);
+    tmp = ft_strjoin(key, "=");
+    new_env = ft_strjoin(tmp, value);
+    free(tmp);
+    free(env->content);
+    free(env->env);
+    env->env = new_env;
+	env->content = value;
+	return (0);
+}
