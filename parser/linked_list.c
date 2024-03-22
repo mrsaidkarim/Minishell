@@ -12,6 +12,7 @@ t_node	*ft_create_cmd(char *str, int len, t_token tok, t_redir *redlist)
 	if (!new)
 		allocate_error(strerror(errno));
 	new->cmd = NULL;
+	new->redirections = NULL;
 	new->tok = tok;
 	new->precedence = ft_precedence(tok);
 	if (tok == EXPR)
