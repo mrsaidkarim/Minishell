@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
 HEADER = included/minishell.h
 RM = rm -rf 
 
@@ -37,6 +37,12 @@ SRCS = minishell.c \
 	   expander/expand.c \
 	   libft/ft_itoa.c \
 	   libft/ft_strjoin.c \
+	   expander/expand_herdoc.c \
+	   execution/handle_errors.c \
+	   expander/expand_file.c \
+	   builtins/export.c \
+	   libft/ft_isalphnum.c \
+	   libft/ft_atoll.c \
 	#    builtins/cd.c \
 
 OBJS = ${SRCS:.c=.o}
