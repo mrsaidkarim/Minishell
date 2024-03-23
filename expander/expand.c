@@ -127,18 +127,18 @@ void	ft_print_lst(t_list *head)
 	}
 }
 
-int	ft_is_del(char c, char *set)
-{
-	int i;
+// int	ft_is_del(char c, char *set)
+// {
+// 	int i;
 
-	i = -1;
-	while (set[++i])
-	{
-		if (set[i] == c)
-			return (1);
-	}
-	return (0);
-}
+// 	i = -1;
+// 	while (set[++i])
+// 	{
+// 		if (set[i] == c)
+// 			return (1);
+// 	}
+// 	return (0);
+// }
 
 void	ft_list_cwd(t_list **head)
 {
@@ -154,39 +154,6 @@ void	ft_list_cwd(t_list **head)
 	closedir(dir);
 	return ;
 }
-
-char *ft_join_all(t_list *head)
-{
-	t_list *tmp;
-	char *buffer =  NULL;
-
-	tmp = head;
-	while (tmp)
-	{
-		if (buffer)
-			buffer = ft_strjoin_2(buffer, ft_strjoin(" ", tmp->content));
-		else
-			buffer = ft_strjoin_2(buffer, tmp->content);
-		tmp = tmp->next;
-	}
-	return (buffer);
-}
-// void	ft_expand_etoile(t_list **head, t_var *var)
-// {
-// 	t_list *tmp;
-// 	int i;
-
-// 	tmp = *head;
-// 	while (tmp)
-// 	{
-// 		i = 0;
-// 		while (((char *)tmp->content)[i] && ((char *)tmp->content)[i] == '*')
-// 			i++;
-// 		if (!((char *)tmp->content)[i])
-// 			tmp->content = ft_list_cwd(var);
-// 		tmp = tmp->next;
-// 	}
-// }
 
 void	ft_init(t_exp *expand)
 {
@@ -255,7 +222,7 @@ void	ft_dollar(t_exp *exp, char *prompt, t_var *var)
 	{
 		exp->buffer2 = ft_chartostr(prompt[exp->i]);
 			exp->i++;
-		while (prompt[exp->i] && !ft_is_del(prompt[exp->i], "$ +=?#@*\"'"))
+		while (prompt[exp->i] && !is_del(prompt[exp->i]))
 		{
 			exp->buffer2 = ft_strjoin_2(exp->buffer2, ft_chartostr(prompt[exp->i]));
 				exp->i++;
@@ -263,7 +230,7 @@ void	ft_dollar(t_exp *exp, char *prompt, t_var *var)
 		exp->buffer1 = ft_strjoin_2(exp->buffer1, ft_search_var(exp->buffer2 + 1, var));
 		if (prompt[exp->i] == '?')
 			exp->buffer1 = ft_strjoin_2(exp->buffer1, ft_itoa(var->status));
-		else if (prompt[exp->i] && ft_is_del(prompt[exp->i], "$ ?"))
+		else if (prompt[exp->i] && is_del(prompt[exp->i]))
 			exp->buffer1 = ft_strjoin_2(exp->buffer1, ft_chartostr(prompt[exp->i]));
 		else if (ft_strlen(exp->buffer2) == 1 && !prompt[exp->i])
 			exp->buffer1 = ft_strjoin_2(exp->buffer1, exp->buffer2);
@@ -300,88 +267,7 @@ void	ft_dollar(t_exp *exp, char *prompt, t_var *var)
 
 /////////////////////////
 
-// char	**ft_expand(char *prompt, t_var *var)
-// {
-// 	t_exp exp;
-// 	char  **tab;
 
-// 	ft_init(&exp);
-// 	while (prompt[exp.i])
-// 	{
-// 		if ((prompt[exp.i] == ' ' || prompt[exp.i] == 127) && exp.open == 0)
-// 		{
-// 			if (exp.buffer1)
-// 			{
-// 				if (!check_etoile(exp.buffer1) && !exp.flag)
-// 					ft_list_cwd(&exp.head);
-// 				else
-// 					ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
-// 				exp.buffer1 = NULL;
-// 				exp.flag = 0;
-// 			}
-// 		}
-// 		else if (prompt[exp.i] == '"' || prompt[exp.i] == '\'')
-// 		{
-// 			if (exp.open == 0)
-// 			{
-// 				exp.open = prompt[exp.i];
-// 				exp.flag = 1;
-// 			}
-// 			else if (exp.open == prompt[exp.i])
-// 			{
-// 				if (!exp.buffer1 && (prompt[exp.i + 1] == ' ' || !prompt[exp.i + 1]))
-// 					exp.buffer1 = ft_strdup("");
-// 				exp.open = 0;
-// 				if (!exp.buffer1 || (prompt[exp.i] == prompt[exp.i - 1] && !check_etoile(exp.buffer1)))
-// 					exp.flag = 0;
-// 			}
-// 			else
-// 				exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
-// 		}
-// 		else if (prompt[exp.i] == '$' && exp.open != '\'')
-// 		{
-// 			while (prompt[exp.i] && prompt[exp.i] == '$')
-// 			{
-// 				exp.buffer2 = ft_chartostr(prompt[exp.i]);
-// 				exp.i++;
-// 				while (prompt[exp.i] && !ft_is_del(prompt[exp.i], "$ +=?#@*\"']}"))
-// 				{
-// 					exp.buffer2 = ft_strjoin_2(exp.buffer2, ft_chartostr(prompt[exp.i]));
-// 					exp.i++;
-// 				}
-// 				if (!ft_strcmp(exp.buffer2, "$") && prompt[exp.i] != '?')
-// 						exp.buffer1 = ft_strjoin_2(exp.buffer1, exp.buffer2);
-// 				else
-// 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_search_var(exp.buffer2 + 1, var));
-// 				if (prompt[exp.i] == '?' && (prompt[exp.i + 1] == ' ' || !prompt[exp.i + 1]))
-// 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_itoa(var->status));
-// 				else if (prompt[exp.i] && ft_is_del(prompt[exp.i], " +=?#@*\']}"))
-// 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
-// 				// else if (ft_strlen(exp.buffer2) == 1 && !prompt[exp.i])
-// 				// 	exp.buffer1 = ft_strjoin_2(exp.buffer1, exp.buffer2);
-// 				exp.buffer2 = NULL;
-// 			}
-// 		}
-// 		else
-// 			exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
-// 		if (!prompt[exp.i])
-// 			break;
-// 		exp.i++;
-// 	}
-// 	if (exp.buffer1)
-// 	{
-// 		if (!check_etoile(exp.buffer1) && !exp.flag)
-// 			ft_list_cwd(&exp.head);
-// 		else
-// 			ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
-// 		exp.buffer1 = NULL;
-// 		exp.flag = 0;
-// 	}
-// 	ft_print_lst(exp.head);
-// 	tab = ft_list_to_2d(exp.head);
-// 	// exit(50);
-// 	return (tab);
-// }
 
 
 
