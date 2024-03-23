@@ -8,6 +8,14 @@ int	is_valid(char c, int fisrt)
 		return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
 			|| (c >= '0' && c <= '9') || c == '_');
 }
+
+void	errors_unset(char *s)
+{
+	ft_putstr_fd("bash: export: `", 2);
+	ft_putstr_fd(s, 2);
+	ft_putstr_fd("` :not a valid identifier\n", 2);
+}
+
 int	check_var(char *str)
 {
 	int len;
@@ -24,7 +32,8 @@ int	check_var(char *str)
 		i++;
 	if (!len || (str[i] && !is_valid(str[i], 0)))
 	{
-		printf("bash: unset: `%s`: not a valid identifier\n", str);
+		// printf("bash: unset: `%s`: not a valid identifier\n", str);
+		errors_unset(str);
 		return (false);
 	}
 	return (true);
@@ -49,33 +58,42 @@ void	delete_node(t_var *var, t_env *node, int check)
 	(free(tmp), tmp = NULL);
 }
 
+void	handle_unset(t_var *var, char *tmp, t_env *list, t_env *save)
+{
+	int check;
+
+	if (!check_var(tmp))
+	{
+		var->status = 1;
+		return ;
+	}
+	list = var->env;
+	check = 0;
+	while (list)
+	{
+		if (!ft_strcmp(list->var, tmp))
+		{
+			delete_node(var, save, check);
+			break;
+		}
+		save = list;
+		list = list->next;
+		check++;
+	}
+	var->status = 0;
+}
+
 void	ft_unset(t_var *var, char **cmd)
 {
 	char	**tmp;
 	t_env	*list;
-	int		check;
-	t_env	*save = NULL;
+	t_env	*save;
 
+	list = NULL;
+	save = NULL;
 	tmp = cmd;
 	while (*++tmp)
 	{
-		if (!check_var(*tmp))
-		{
-			var->status = 1;
-			continue ;
-		}
-		list = var->env;
-		check = 0;
-		while (list)
-		{
-			if (!ft_strcmp(list->var, *tmp))
-			{
-				delete_node(var, save, check);
-				break;
-			}
-			save = list;
-			list = list->next;
-			check++;
-		}
+		handle_unset(var, *tmp, list, save);
 	}
 }

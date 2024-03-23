@@ -1,5 +1,21 @@
 #include "../included/minishell.h"
 
+
+int	size_list(t_list *head)
+{
+	int size;
+	t_list *tmp;
+
+	size = 0;
+	tmp = head;
+	while (tmp)
+	{
+		size++;
+		tmp = tmp->next;
+	}
+	return (size);
+}
+
 char	**ft_list_to_2d(t_list *head)
 {
 	t_list	*tmp;
@@ -9,18 +25,12 @@ char	**ft_list_to_2d(t_list *head)
 
 	if (!head)
 		return (NULL);
-	tmp = head;
-	size = 0;
-	while (tmp)
-	{
-		size++;
-		tmp = tmp->next;
-	}
-	tmp = head;
+	size = size_list(head);
 	tab = malloc(sizeof(char *) * (size + 1));
 	if (!tab)
 		allocate_error(strerror(errno));
 	i = 0;
+	tmp = head;
 	while (tmp)
 	{
 		tab[i] = ft_strdup((char *)tmp->content);
@@ -34,10 +44,10 @@ char	**ft_list_to_2d(t_list *head)
 char	*ft_strjoin_2(char *s1, char *s2)
 {
 	char	*ptr;
-	char	*origin;
-	int		i = 0;
-	int		j = 0;
+	int		i;
+	int		j;
 
+	(1) && (i = 0, j = 0);
 	if (!s1 && !s2)
 		return (NULL);
 	if (!s1)
@@ -47,14 +57,13 @@ char	*ft_strjoin_2(char *s1, char *s2)
 	ptr = (char *)malloc(((ft_strlen(s1) + ft_strlen(s2)) + 1) * sizeof(char));
 	if (!ptr)
 		return (NULL);
-	origin = ptr;
 	while (s1[i])
 		(1) && (ptr[i] = s1[i], i++);
 	while (s2[j])
 		(1) && (ptr[i] = s2[j], i++, j++);
 	ptr[i] = '\0';
 	(free(s1), free(s2));
-	return (origin);
+	return (ptr);
 }
 
 t_list	*ft_lstnew(void *content)
@@ -94,7 +103,7 @@ char	*ft_search_var(char *key, t_var *var)
 	while (tmp)
 	{
 		if (!ft_strcmp(key, tmp->var))
-			return ((tmp->content));
+			return (ft_strdup(tmp->content));
 		tmp = tmp->next;
 	}
 	return (NULL);
@@ -131,19 +140,18 @@ int	ft_is_del(char c, char *set)
 	return (0);
 }
 
-void	ft_list_cwd(t_list **head,t_var *var)
+void	ft_list_cwd(t_list **head)
 {
-	char *buffer;
 	DIR *dir;
     struct dirent *entry;
 
-	buffer = NULL;
-	dir = opendir(ft_search_var("PWD", var));
+	dir = opendir(".");
 	while ((entry = readdir(dir)) != NULL)
 	{
 		if(entry->d_name[0] != '.')
 			ft_lstadd_back(head, ft_lstnew(ft_strdup(entry->d_name)));
     }
+	closedir(dir);
 	return ;
 }
 
@@ -203,9 +211,11 @@ int check_etoile(char *str)
 {
 	int i;
 
+	if (!*str)
+		return (1);
 	i = -1;
 	while (str[++i] && str[i] == '*')
-		i++;
+		;
 	if (!str[i])
 		return (0);
 	return (1);
@@ -213,10 +223,11 @@ int check_etoile(char *str)
 
 void	ft_add(t_exp *exp, t_var *var)
 {
+	(void)var;
 	if (exp->buffer1)
 	{
 		if (!exp->flag && !check_etoile(exp->buffer1))
-			ft_list_cwd(&exp->head,var);
+			ft_list_cwd(&exp->head);
 		else
 		{
 			ft_lstadd_back(&exp->head, ft_lstnew(exp->buffer1));
@@ -260,30 +271,226 @@ void	ft_dollar(t_exp *exp, char *prompt, t_var *var)
 	}
 }
 
+// char	**ft_expand(char *prompt, t_var *var)
+// {
+// 	t_exp	exp;
+// 	char 	**tab;
+
+// 	ft_init(&exp);
+// 	tab = NULL;
+// 	while (prompt[exp.i])
+// 	{
+// 		if (prompt[exp.i] == ' ' && exp.open == 0)
+// 			ft_add(&exp, var);
+// 		else if (prompt[exp.i] == '"' || prompt[exp.i] == '\'')
+// 			ft_join(&exp, prompt);
+// 		else if (prompt[exp.i] == '$' && exp.open != '\'')
+// 			ft_dollar(&exp, prompt, var);
+// 		else
+// 			exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
+// 		if (!prompt[exp.i])
+// 			break;
+// 		exp.i++;
+// 	}
+// 	ft_add(&exp, var);
+// 	ft_print_lst(exp.head);
+// 	tab = ft_list_to_2d(exp.head);
+// 	return (tab);
+// }
+
+/////////////////////////
+
+// char	**ft_expand(char *prompt, t_var *var)
+// {
+// 	t_exp exp;
+// 	char  **tab;
+
+// 	ft_init(&exp);
+// 	while (prompt[exp.i])
+// 	{
+// 		if ((prompt[exp.i] == ' ' || prompt[exp.i] == 127) && exp.open == 0)
+// 		{
+// 			if (exp.buffer1)
+// 			{
+// 				if (!check_etoile(exp.buffer1) && !exp.flag)
+// 					ft_list_cwd(&exp.head);
+// 				else
+// 					ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
+// 				exp.buffer1 = NULL;
+// 				exp.flag = 0;
+// 			}
+// 		}
+// 		else if (prompt[exp.i] == '"' || prompt[exp.i] == '\'')
+// 		{
+// 			if (exp.open == 0)
+// 			{
+// 				exp.open = prompt[exp.i];
+// 				exp.flag = 1;
+// 			}
+// 			else if (exp.open == prompt[exp.i])
+// 			{
+// 				if (!exp.buffer1 && (prompt[exp.i + 1] == ' ' || !prompt[exp.i + 1]))
+// 					exp.buffer1 = ft_strdup("");
+// 				exp.open = 0;
+// 				if (!exp.buffer1 || (prompt[exp.i] == prompt[exp.i - 1] && !check_etoile(exp.buffer1)))
+// 					exp.flag = 0;
+// 			}
+// 			else
+// 				exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
+// 		}
+// 		else if (prompt[exp.i] == '$' && exp.open != '\'')
+// 		{
+// 			while (prompt[exp.i] && prompt[exp.i] == '$')
+// 			{
+// 				exp.buffer2 = ft_chartostr(prompt[exp.i]);
+// 				exp.i++;
+// 				while (prompt[exp.i] && !ft_is_del(prompt[exp.i], "$ +=?#@*\"']}"))
+// 				{
+// 					exp.buffer2 = ft_strjoin_2(exp.buffer2, ft_chartostr(prompt[exp.i]));
+// 					exp.i++;
+// 				}
+// 				if (!ft_strcmp(exp.buffer2, "$") && prompt[exp.i] != '?')
+// 						exp.buffer1 = ft_strjoin_2(exp.buffer1, exp.buffer2);
+// 				else
+// 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_search_var(exp.buffer2 + 1, var));
+// 				if (prompt[exp.i] == '?' && (prompt[exp.i + 1] == ' ' || !prompt[exp.i + 1]))
+// 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_itoa(var->status));
+// 				else if (prompt[exp.i] && ft_is_del(prompt[exp.i], " +=?#@*\']}"))
+// 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
+// 				// else if (ft_strlen(exp.buffer2) == 1 && !prompt[exp.i])
+// 				// 	exp.buffer1 = ft_strjoin_2(exp.buffer1, exp.buffer2);
+// 				exp.buffer2 = NULL;
+// 			}
+// 		}
+// 		else
+// 			exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
+// 		if (!prompt[exp.i])
+// 			break;
+// 		exp.i++;
+// 	}
+// 	if (exp.buffer1)
+// 	{
+// 		if (!check_etoile(exp.buffer1) && !exp.flag)
+// 			ft_list_cwd(&exp.head);
+// 		else
+// 			ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
+// 		exp.buffer1 = NULL;
+// 		exp.flag = 0;
+// 	}
+// 	ft_print_lst(exp.head);
+// 	tab = ft_list_to_2d(exp.head);
+// 	// exit(50);
+// 	return (tab);
+// }
+
+
+
+//////////////// new expand
+
+void	free_list(t_list **head)
+{
+	t_list	*tmp;
+
+	while (*head)
+	{
+		tmp = *head;
+		(*head) = (*head)->next;
+		free(tmp->content);
+		free(tmp);
+	}
+	(*head) = NULL;
+}
+
+int	is_del(char c)
+{
+	if (ft_isalnum(c))
+		return (0);
+	return (1);
+}
+
+
 char	**ft_expand(char *prompt, t_var *var)
 {
-	t_exp	exp;
-	char 	**tab;
+	t_exp exp;
+	char  **tab;
 
 	ft_init(&exp);
-	tab = NULL;
 	while (prompt[exp.i])
 	{
-		if (prompt[exp.i] == ' ' && exp.open == 0)
-			ft_add(&exp, var);
+		if ((prompt[exp.i] == ' ' || prompt[exp.i] == 127) && exp.open == 0)
+		{
+			if (exp.buffer1)
+			{
+				if (!check_etoile(exp.buffer1) && !exp.flag)
+					ft_list_cwd(&exp.head);
+				else
+					ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
+				exp.buffer1 = NULL;
+				exp.flag = 0;
+			}
+		}
 		else if (prompt[exp.i] == '"' || prompt[exp.i] == '\'')
-			ft_join(&exp, prompt);
+		{
+			if (exp.open == 0)
+			{
+				exp.open = prompt[exp.i];
+				exp.flag = 1;
+			}
+			else if (exp.open == prompt[exp.i])
+			{
+				if (!exp.buffer1 && (prompt[exp.i + 1] == ' ' || !prompt[exp.i + 1]))
+					exp.buffer1 = ft_strdup("");
+				exp.open = 0;
+				if (!exp.buffer1 || (prompt[exp.i] == prompt[exp.i - 1] && !check_etoile(exp.buffer1)))
+					exp.flag = 0;
+			}
+			else
+				exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
+		}
 		else if (prompt[exp.i] == '$' && exp.open != '\'')
-			ft_dollar(&exp, prompt, var);
+		{
+			while (prompt[exp.i] && prompt[exp.i] == '$')
+			{
+				exp.buffer2 = ft_chartostr(prompt[exp.i]);
+				exp.i++;
+				while (prompt[exp.i] && !is_del(prompt[exp.i]))
+				{
+					exp.buffer2 = ft_strjoin_2(exp.buffer2, ft_chartostr(prompt[exp.i]));
+					if (ft_isdigit(exp.buffer2[1]))
+						break ;
+					exp.i++;
+				}
+				if (!ft_strcmp(exp.buffer2, "$") && prompt[exp.i] != '?')
+						exp.buffer1 = ft_strjoin_2(exp.buffer1, exp.buffer2);
+				else
+					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_search_var(exp.buffer2 + 1, var));
+				if (prompt[exp.i] == '?' && (prompt[exp.i + 1] == ' ' || !prompt[exp.i + 1]))
+					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_itoa(var->status));
+				else if (prompt[exp.i] && is_del(prompt[exp.i]) && prompt[exp.i] != '$' && (prompt[exp.i + 1] != '\0' && prompt[exp.i + 1] != ' '))
+					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
+				// else if (ft_strlen(exp.buffer2) == 1 && !prompt[exp.i])
+				// 	exp.buffer1 = ft_strjoin_2(exp.buffer1, exp.buffer2);
+				exp.buffer2 = NULL;
+			}
+		}
 		else
 			exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
 		if (!prompt[exp.i])
 			break;
 		exp.i++;
 	}
-	ft_add(&exp, var);
+	if (exp.buffer1)
+	{
+		if (!check_etoile(exp.buffer1) && !exp.flag)
+			ft_list_cwd(&exp.head);
+		else
+			ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
+		exp.buffer1 = NULL;
+		exp.flag = 0;
+	}
 	ft_print_lst(exp.head);
 	tab = ft_list_to_2d(exp.head);
+	free_list(&exp.head);
 	return (tab);
 }
 
@@ -325,74 +532,7 @@ char	**ft_expand(char *prompt, t_var *var)
 
 
 
-// char	**ft_expand(char *prompt, t_var *var)
-// {
-	
-// 	t_exp	exp;
-// 	char 	**join = NULL;
 
-// 	ft_init(&exp);
-	
-// 	while (prompt[exp.i])
-// 	{
-// 		if (prompt[exp.i] == ' ' && exp.open == 0)
-// 		{
-// 			if (exp.buffer1)
-// 			{
-// 				ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
-// 				exp.buffer1 = NULL;
-// 			}
-// 		}
-// 		else if (prompt[exp.i] == '"' || prompt[exp.i] == '\'')
-// 		{
-// 			if (exp.open == 0)
-// 				exp.open = prompt[exp.i];
-// 			else if (exp.open == prompt[exp.i])
-// 				exp.open = 0;
-// 			else
-// 				exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
-// 		}
-// 		else if (prompt[exp.i] == '$' && exp.open != '\'')
-// 		{
-// 			while (prompt[exp.i] && prompt[exp.i] == '$')
-// 			{
-// 				exp.buffer2 = ft_chartostr(prompt[exp.i]);
-// 				exp.i++;
-// 				while (prompt[exp.i] && !ft_is_del(prompt[exp.i], "$ +=?#@*\"'"))
-// 				{
-// 					exp.buffer2 = ft_strjoin_2(exp.buffer2, ft_chartostr(prompt[exp.i]));
-// 					exp.i++;
-// 				}
-// 				exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_search_var(exp.buffer2 + 1, var));
-// 				if (prompt[exp.i] == '?')
-// 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_itoa(var->status));
-// 				else if (prompt[exp.i] && ft_is_del(prompt[exp.i], "$ ?"))
-// 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
-// 				else if (ft_strlen(exp.buffer2) == 1 && !prompt[exp.i])
-// 					exp.buffer1 = ft_strjoin_2(exp.buffer1, exp.buffer2);
-// 				exp.buffer2 = NULL;
-// 			}
-// 		}
-// 		else
-// 		{
-// 			printf("here\n");
-// 			exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
-// 		}
-// 		if (!prompt[exp.i])
-// 			break;
-// 		exp.i++;
-// 	}
-// 	if (exp.buffer1)
-// 	{
-// 		ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
-// 		exp.buffer1 = NULL;
-// 	}
-// 	ft_print_lst(exp.head);
-// 	// ft_expand_etoile(&exp.head, var);
-// 	// join = ft_join_all(exp.head);
-// 	join = ft_list_to_2d(exp.head);
-// 	return (join);
-// }
 
 
 
@@ -482,107 +622,8 @@ char	**ft_expand(char *prompt, t_var *var)
 
 
 
-// version 2;
-// t_list	*ft_expand(char *prompt, t_var *var)
-// {
-	
-// 	t_list	*head = NULL;
-// 	int 	open = 0; // " or ' or 0
-// 	char	*buff = NULL;
-// 	int		i = 0;
-// 	char	*buff2 = NULL;
 
-// 	while (prompt[i])
-// 	{
-// 		if (prompt[i] == ' ' && open == 0)
-// 		{
-// 			if (buff)
-// 			{
-// 				ft_lstadd_back(&head, ft_lstnew(buff));
-// 				buff = NULL; // free
-// 			}
-// 		}
-// 		else if (prompt[i] == '"' || prompt[i] == '\'')
-// 		{
-// 			if (open == 0)
-// 				open = prompt[i];
-// 			else if (open == prompt[i])
-// 				open = 0;
-// 			else
-// 				buff = ft_strjoin_2(buff, ft_chartostr(prompt[i]));
-// 		}
-// 		else if (prompt[i] == '$' && open != '\'')
-// 		{
-// 			while (prompt[i] && prompt[i] == '$')
-// 			{
-// 				buff2 = ft_chartostr(prompt[i]);
-// 				i++;
-// 				while (prompt[i] && !ft_is_del(prompt[i], "$ +=?#@*\"'"))
-// 				{
-// 					buff2 = ft_strjoin_2(buff2, ft_chartostr(prompt[i]));
-// 					i++;
-// 				}
-// 				buff = ft_strjoin_2(buff, ft_search_var(buff2 + 1, var));
-// 				if (prompt[i] == '?')
-// 					buff = ft_strjoin_2(buff, ft_itoa(var->status));
-// 				else if (prompt[i] && ft_is_del(prompt[i], "$ ?"))
-// 					buff = ft_strjoin_2(buff, ft_chartostr(prompt[i]));
-// 				else if (ft_strlen(buff2) == 1 && !prompt[i])
-// 					buff = ft_strjoin_2(buff, buff2);
-// 				buff2 = NULL;
-// 			}
-// 		}
-// 		else
-// 			buff = ft_strjoin_2(buff, ft_chartostr(prompt[i]));
-// 		if (!prompt[i])
-// 			break;
-// 		i++;
-// 	}
-// 	if (buff)
-// 	{
-// 		ft_lstadd_back(&head, ft_lstnew(buff));
-// 		buff = NULL;
-// 	}
-// 	// ft_print_lst(head);
-// 	ft_expand_etoile(&head, var);
-// 	return (head);
-// }
 
-// bool	option(char *str)
-// {
-// 	if (!*str)
-// 		return (false);
-// 	if (*str == '-')
-// 	{
-// 		str++;
-// 		while (*str && *str == 'n')
-// 			str++;
-// 	}
-// 	if (*str)
-// 			return (false);
-// 	return (true);
-// }
 
-// void	ft_echo2(t_list *head, t_var *var)
-// {
-// 	int	opt;
-// 	int i;
 
-// 	i = 1;
-// 	opt = 0;
-// 	head = head->next;
-// 	while (head && option((head->content)))
-// 	{
-// 		opt = 1;
-// 		head = head->next;
-// 	}
-// 	while (head)
-// 	{
-// 		printf("%s", head->content);
-// 		if (head->next)
-// 			printf(" ");
-// 		head = head->next;
-// 	}
-// 	if (!opt)
-// 		printf("\n");
-// }
+

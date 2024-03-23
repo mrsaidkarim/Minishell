@@ -14,8 +14,8 @@ int	is_builting(char **cmd, t_var *var)
 	// 	ft_cd(var, cmd);
 	else if (!ft_strcmp("unset", cmd[0]))
 		ft_unset(var, cmd);
-	// else if (!ft_strcmp("export", cmd[0]))
-	// 	ft_export(var, cmd);
+	else if (!ft_strcmp("export", cmd[0]))
+		ft_export(var, cmd);
 	else
 		return (0);
 	return (1);
@@ -42,7 +42,7 @@ char	*get_path(char *cmd, t_var *var)
 	int		i;
 
 	if (cmd[0] == '/')
-		return (cmd);
+		return (ft_strdup(cmd));
 	paths = get_paths(var);
 	if (!paths)
 		return (NULL);
@@ -52,7 +52,7 @@ char	*get_path(char *cmd, t_var *var)
 		part_path = ft_strjoin(paths[i], "/");
 		path = ft_strjoin(part_path, cmd);
 		if (access(path, F_OK) == 0)
-			return (free_matrix(paths), path);
+			return (free_matrix(paths), free(part_path) ,path);
 		free(path);
 		free(part_path);
 	}
@@ -96,6 +96,12 @@ char	**env_list_to_tab(t_env *env)
 	tab[i] = NULL;
 	return (tab);
 }
+void	error_permession(char *path)
+{
+	ft_putstr_fd("bash: ", 2);
+	ft_putstr_fd(path, 2);
+	ft_putstr_fd(": Permission denied\n", 2);
+}
 
 void	chdild_exec(char *path, char **cmd, t_var *var)
 {
@@ -107,32 +113,36 @@ void	chdild_exec(char *path, char **cmd, t_var *var)
 	pid = fork();
 	if (pid < 0)
 	{
-		printf("faild to creat a child\n");
+		ft_putstr_fd("faild to creat a child\n", 2);
 		var->status = 1;
+		free_matrix(env);
 		return ;
 	}
 	if (pid == 0)
 	{
 		execve(path, cmd, env);
-		// exit(1);
+		error_permession(path);
+		exit(126);
 	}
 	waitpid(pid, &status, 0);
-	var->status = status;
+	var->status = status >> 8;
+	free_matrix(env);
+	// var->status = WEXITSTATUS(status);
 }
 
-void	redirct_output(t_redir *redirect, char c)
-{
-	if (c == 'o')
-	{
-		dup2(redirect->fd, STDOUT_FILENO);
-		close(redirect->fd);
-	}
-	else if (c == 'i')
-	{
-		dup2(redirect->fd, STDIN_FILENO);
-		close(redirect->fd);
-	}
-}
+// void	redirct_output(t_redir *redirect, char c)
+// {
+// 	if (c == 'o')
+// 	{
+// 		dup2(redirect->fd, STDOUT_FILENO);
+// 		close(redirect->fd);
+// 	}
+// 	else if (c == 'i')
+// 	{
+// 		dup2(redirect->fd, STDIN_FILENO);
+// 		close(redirect->fd);
+// 	}
+// }
 
 // int	_open_f(t_node *node, char c, t_var *var)
 // {
@@ -183,15 +193,20 @@ int	ft_heredoc(t_redir *node, t_var *var)
 {
 	int		tab[2];
 	char	*input;
+	int		save_fd;
 	char	*str;
 
-	if (pipe(tab) == -1)
-	{
-		printf("error in creation pipe in herdoc");
-		exit(1);
-	}
+	if (!check_pipe(tab))
+		return (var->status = 1, -1);
+	ft_start_with(node->file, &node->flg);
+	node->file = expand_file(node->file);
 	while (1)
 	{
+		if (!isatty(STDOUT_FILENO))
+		{
+			save_fd = dup(STDOUT_FILENO);
+			dup2(var->fd_output, STDOUT_FILENO);
+		}
 		input = readline("\033[1;31mheredoc> \033[0m");
 		if (!input || !ft_strcmp(input, node->file))
 		{
@@ -199,15 +214,32 @@ int	ft_heredoc(t_redir *node, t_var *var)
 			break;
 		}
 		if (node->flg)
-			input = (char *)ft_expand(input, var);
+			input = expand_herdoc(input, var);
 		str = ft_strjoin(input, "\n");
 		write(tab[1], str, ft_strlen(str));
 		free(str);
+		free(input);
 	}
+	dup2(save_fd, STDOUT_FILENO);
 	return (close(tab[1]), tab[0]);
 }
 
-void	handle_fd_in(t_node *node)
+int open_file(char *path, int flag, mode_t mode)
+{
+	int fd;
+
+	fd = open(path, flag, mode);
+	if (fd == - 1)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		return (-1);
+	}
+	return (fd);
+}
+
+int	handle_fd_in(t_node *node)
 {
 	t_redir	*tmp;
 	int		fd_in;
@@ -220,7 +252,11 @@ void	handle_fd_in(t_node *node)
 		{
 			if (fd_in)
 				close(fd_in);
-			fd_in = open(tmp->file, O_RDONLY, 0644);
+			tmp->file = expand_file(tmp->file); 
+			// fd_in = open(tmp->file, O_RDONLY, 0644);
+			fd_in = open_file(tmp->file, O_RDONLY, 0644);
+			if (fd_in < 0)
+				return (-1);
 		}
 		else if (tmp->tok == HEREDOC)
 		{
@@ -230,9 +266,11 @@ void	handle_fd_in(t_node *node)
 		}
 		tmp = tmp->rchild;
 	}
-	node->fd[0] = fd_in;
+	// node->fd[0] = fd_in;
+	return (node->fd[0] = fd_in, 1);
 }
-void	handle_fd_out(t_node *node)
+
+int	handle_fd_out(t_node *node)
 {
 	t_redir	*tmp;
 	int		fd_out;
@@ -245,20 +283,24 @@ void	handle_fd_out(t_node *node)
 		{
 			if (fd_out)
 				close(fd_out);
-			fd_out = open(tmp->file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+			tmp->file = expand_file(tmp->file);
+			fd_out = open_file(tmp->file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		}
 		else if (tmp->tok == REDIR_APPEND)
 		{
 			if (fd_out)
 				close(fd_out);
-			fd_out = open(tmp->file,O_CREAT | O_WRONLY | O_APPEND, 0644);
+			fd_out = open_file(tmp->file, O_CREAT | O_WRONLY | O_APPEND, 0644);
 		}
+		if (fd_out < 0)
+			return (-1);
 		tmp = tmp->rchild;
 	}
-	node->fd[1] = fd_out;
+	// node->fd[1] = fd_out;
+	return (node->fd[1] = fd_out, 1);
 }
 
-void	handle_rederction(t_node *node, t_var *var)
+int	handle_rederction(t_node *node, t_var *var)
 {
 	t_redir	*tmp;
 
@@ -268,11 +310,17 @@ void	handle_rederction(t_node *node, t_var *var)
 		while (tmp)
 		{
 			if (tmp->tok == HEREDOC)
+			{
 				tmp->fd = ft_heredoc(tmp, var);
+				if (tmp->fd == -1)
+					return (var->status = 1, -1);
+			}
 			tmp = tmp->rchild;
 		}
-		handle_fd_in(node);
-		handle_fd_out(node);
+		if (handle_fd_in(node) < 0)
+			return (var->status = 1, -1);
+		if (handle_fd_out(node) < 0)
+			return (var->status = 1, -1);
 		if (node->fd[0] != 0)
 		{
 			dup2(node->fd[0], STDIN_FILENO);
@@ -284,13 +332,25 @@ void	handle_rederction(t_node *node, t_var *var)
 			close(node->fd[1]);
 		}
 	}
+	return (1);
+}
+
+void	error_cmd_not_found(char *cmd)
+{
+	ft_putstr_fd("bash: ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(": command not found\n", 2);
 }
 
 void	exec_cmd(t_node *node,t_var *var)
 {
 	char *path;
 
-	handle_rederction(node, var);
+	if (handle_rederction(node, var) < 0)
+	{
+		return_in_out_fd(var);
+		return ;
+	}
 	node->cmd = ft_expand(node->pre_cmd, var);
 	if (node->cmd && node->cmd[0])
 	{
@@ -299,18 +359,15 @@ void	exec_cmd(t_node *node,t_var *var)
 			path = get_path(node->cmd[0], var);
 			if (!path)
 			{
-				printf("bash: %s: command not found\n", node->cmd[0]);
+				error_cmd_not_found(node->cmd[0]);
 				var->status = 127;
 				return_in_out_fd(var);
 				return ;
 			}
-			if (!node->redirections)
-				chdild_exec(path, node->cmd, var);
 			else
 			{
-				// _open_f(node, 0, var);
 				chdild_exec(path, node->cmd, var);
-				// _open_f(node, 'r', var);
+				free(path);
 			}
 		}
 	}

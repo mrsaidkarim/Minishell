@@ -4,7 +4,7 @@ bool	option(char *str)
 {
 	if (!*str)
 		return (false);
-	if (*str == '-')
+	if (*str == '-' && *(str + 1) != '\0')
 	{
 		str++;
 		while (*str && *str == 'n')

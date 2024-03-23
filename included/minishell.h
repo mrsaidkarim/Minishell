@@ -12,8 +12,6 @@
 #include <stdbool.h>
 #include <sys/wait.h>
 #include <errno.h>
-
-///
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,7 +21,6 @@
 #include <stdbool.h>
 #include <sys/wait.h>
 #include <dirent.h>
-
 
 typedef struct s_node t_node;
 
@@ -171,12 +168,26 @@ void	ft_unset(t_var *var, char **cmd);
 char	*ft_itoa(int n);
 
 
+void	ft_export(t_var *var, char **cmd);
 // expand;
 char	*ft_search_var(char *key, t_var *var);
+char	*expand_herdoc(char *str, t_var *var);
+char	*ft_strjoin_2(char *s1, char *s2);
+char    *expand_file(char *file);
 // t_list *ft_expand(char *promt, t_var *var);
 char    **ft_expand(char *promt, t_var *var);
 char	*ft_chartostr(char c);
-void	ft_echo2(t_list *head, t_var *var);
+int	    ft_is_del(char c, char *set);
+int     find_char(char *env, char c);
+int     is_valid(char c, int fisrt);
+char	**get_paths(t_var *var);
+int	    ft_isalnum(int c);
+int     ft_isdigit(int c);
+long long	ft_atoll(const char *str, int *i);
+int     is_del(char c);
+void	ft_start_with(char *s, bool *flag);
+// void	ft_echo2(t_list *head, t_var *var);
+
 //// handle errors in execution !
 int	check_pipe(int tab[2]);
 
