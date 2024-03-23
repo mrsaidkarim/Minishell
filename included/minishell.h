@@ -107,9 +107,12 @@ typedef struct s_exp
 // void	ft_pwd(void);
 // char	*ft_strdup(const char *s1);
 
+int	    ft_isalnum(int c);
+int	    ft_isdigit(int c);
 char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 size_t	ft_strlen(const char *s);
+char	*ft_strcpy(char *dest, const char *src);
 void	ft_putstr_fd(char *s, int fd);
 int	    ft_print_syntax_error(char *msg, char *c, int count);
 char    *ft_clean_input(char *str);
@@ -143,6 +146,7 @@ void	ft_echo(char **cmd, t_var *var);
 size_t	ft_strlen(const char *s);
 void	ft_pwd(t_var *var);
 size_t	ft_strlen(const char *s);
+void	ft_cd(t_var *var, char **cmd);
 // char	*parsing(char *input);
 // char	*function_one_space(char *str);
 // char	*ft_strtrim(char const *s1, char const *set);
@@ -154,6 +158,8 @@ void	allocate_error(char *str);
 t_env	*ft_creat_env(char *env, char *var, char *content);
 void	ft_add_env(t_env **head, t_env *new);
 void	ft_env(t_var *var);
+t_env	*ft_env_search(t_env *env, char *key);
+int	    ft_env_replace(t_env *env, char *key, char *value);
 int     ft_atoi(const char *str);
 void	ft_exit(t_var *var, char **cmd);
 void	execution(t_node *root, t_var *var);
@@ -171,7 +177,6 @@ char	*ft_search_var(char *key, t_var *var);
 char    **ft_expand(char *promt, t_var *var);
 char	*ft_chartostr(char c);
 void	ft_echo2(t_list *head, t_var *var);
-
 //// handle errors in execution !
 int	check_pipe(int tab[2]);
 
