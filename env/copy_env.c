@@ -31,12 +31,12 @@ void	initialization(t_var *var,char **env)
 {
 	int	i;
 
-	if (!env || !(*env))
-		return(printf("there's no env !"), exit(0));
-	// var->env = malloc(sizeof(t_env));
-	// if (!var->env)
-	// 	(write(2, "Error: Allocation failed\n", 25), exit(1));
 	init_g_var(var);
+	if (!env || !(*env))
+	{
+		ft_putstr_fd("TERM environment variable not set.!\n", 2);
+		return ;
+	}
 	while (*env)
 	{
 		i = find_char(*env, '=');
