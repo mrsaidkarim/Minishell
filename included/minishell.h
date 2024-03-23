@@ -177,6 +177,9 @@ int     is_valid(char c, int fisrt);
 char	**get_paths(t_var *var);
 int	    ft_isalnum(int c);
 int     ft_isdigit(int c);
+long long	ft_atoll(const char *str, int *i);
+int     is_del(char c);
+void	ft_start_with(char *s, bool *flag);
 // void	ft_echo2(t_list *head, t_var *var);
 
 //// handle errors in execution !
