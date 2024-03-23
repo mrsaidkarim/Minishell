@@ -96,11 +96,21 @@ char	**env_list_to_tab(t_env *env)
 	tab[i] = NULL;
 	return (tab);
 }
-void	error_permession(char *path)
+
+void	error_execve(char *path, int error)
 {
 	ft_putstr_fd("bash: ", 2);
 	ft_putstr_fd(path, 2);
-	ft_putstr_fd(": Permission denied\n", 2);
+	if (error == ENOENT)
+	{
+		ft_putstr_fd(": command not found\n", 2);
+		exit(127);
+	}
+	else if(error == EACCES)
+	{
+		ft_putstr_fd(": Permission denied\n", 2);
+		exit(126);
+	}
 }
 
 void	chdild_exec(char *path, char **cmd, t_var *var)
@@ -121,8 +131,7 @@ void	chdild_exec(char *path, char **cmd, t_var *var)
 	if (pid == 0)
 	{
 		execve(path, cmd, env);
-		error_permession(path);
-		exit(126);
+		error_execve(path, errno);
 	}
 	waitpid(pid, &status, 0);
 	var->status = status >> 8;
@@ -189,36 +198,64 @@ void	chdild_exec(char *path, char **cmd, t_var *var)
 // 	return (1);
 // }
 /////////////////////////////////////////////////////////////////////////////////////////
+
+bool	start_herdoc(t_redir *node, t_var *var, int tab[2])
+{
+	char	*str;
+	char	*input;
+
+	input = readline("\033[1;31mheredoc> \033[0m");
+	if (!input || !ft_strcmp(input, node->file))
+	{
+		free(input);
+		return (true);
+	}
+	if (node->flg)
+		input = expand_herdoc(input, var);
+	str = ft_strjoin(input, "\n");
+	write(tab[1], str, ft_strlen(str));
+	free(str);
+	free(input);
+	return (false);
+}
+
 int	ft_heredoc(t_redir *node, t_var *var)
 {
 	int		tab[2];
-	char	*input;
+	// char	*input;
 	int		save_fd;
-	char	*str;
+	// char	*str;
 
 	if (!check_pipe(tab))
 		return (var->status = 1, -1);
 	ft_start_with(node->file, &node->flg);
 	node->file = expand_file(node->file);
+	if (!isatty(STDOUT_FILENO))
+	{
+		save_fd = dup(STDOUT_FILENO);
+		dup2(var->fd_output, STDOUT_FILENO);
+	}
 	while (1)
 	{
-		if (!isatty(STDOUT_FILENO))
-		{
-			save_fd = dup(STDOUT_FILENO);
-			dup2(var->fd_output, STDOUT_FILENO);
-		}
-		input = readline("\033[1;31mheredoc> \033[0m");
-		if (!input || !ft_strcmp(input, node->file))
-		{
-			free(input);
+		if (start_herdoc(node, var, tab))
 			break;
-		}
-		if (node->flg)
-			input = expand_herdoc(input, var);
-		str = ft_strjoin(input, "\n");
-		write(tab[1], str, ft_strlen(str));
-		free(str);
-		free(input);
+		// if (!isatty(STDOUT_FILENO))
+		// {
+		// 	save_fd = dup(STDOUT_FILENO);
+		// 	dup2(var->fd_output, STDOUT_FILENO);
+		// }
+		// input = readline("\033[1;31mheredoc> \033[0m");
+		// if (!input || !ft_strcmp(input, node->file))
+		// {
+		// 	free(input);
+		// 	break;
+		// }
+		// if (node->flg)
+		// 	input = expand_herdoc(input, var);
+		// str = ft_strjoin(input, "\n");
+		// write(tab[1], str, ft_strlen(str));
+		// free(str);
+		// free(input);
 	}
 	dup2(save_fd, STDOUT_FILENO);
 	return (close(tab[1]), tab[0]);
@@ -233,7 +270,10 @@ int open_file(char *path, int flag, mode_t mode)
 	{
 		ft_putstr_fd("bash: ", 2);
 		ft_putstr_fd(path, 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
+		if (errno == ENOENT)
+			ft_putstr_fd(": No such file or directory\n", 2);
+		if (errno == EACCES)
+			ft_putstr_fd(": Permission denied\n", 2);
 		return (-1);
 	}
 	return (fd);
@@ -300,6 +340,26 @@ int	handle_fd_out(t_node *node)
 	return (node->fd[1] = fd_out, 1);
 }
 
+int	handle_in_out_file(t_node *node, t_var *var)
+{
+	if (handle_fd_in(node) < 0)
+		return (var->status = 1, -1);
+	if (handle_fd_out(node) < 0)
+		return (var->status = 1, -1);
+	if (node->fd[0] != 0)
+	{
+		dup2(node->fd[0], STDIN_FILENO);
+		close(node->fd[0]);
+	}
+	if (node->fd[1] != 0)
+	{
+		dup2(node->fd[1], STDOUT_FILENO);
+		close(node->fd[1]);
+	}
+	return (1);
+}
+
+
 int	handle_rederction(t_node *node, t_var *var)
 {
 	t_redir	*tmp;
@@ -317,20 +377,22 @@ int	handle_rederction(t_node *node, t_var *var)
 			}
 			tmp = tmp->rchild;
 		}
-		if (handle_fd_in(node) < 0)
-			return (var->status = 1, -1);
-		if (handle_fd_out(node) < 0)
-			return (var->status = 1, -1);
-		if (node->fd[0] != 0)
-		{
-			dup2(node->fd[0], STDIN_FILENO);
-			close(node->fd[0]);
-		}
-		if (node->fd[1] != 0)
-		{
-			dup2(node->fd[1], STDOUT_FILENO);
-			close(node->fd[1]);
-		}
+		if (handle_in_out_file(node, var) < 0)
+			return (-1);
+		// if (handle_fd_in(node) < 0)
+		// 	return (var->status = 1, -1);
+		// if (handle_fd_out(node) < 0)
+		// 	return (var->status = 1, -1);
+		// if (node->fd[0] != 0)
+		// {
+		// 	dup2(node->fd[0], STDIN_FILENO);
+		// 	close(node->fd[0]);
+		// }
+		// if (node->fd[1] != 0)
+		// {
+		// 	dup2(node->fd[1], STDOUT_FILENO);
+		// 	close(node->fd[1]);
+		// }
 	}
 	return (1);
 }
