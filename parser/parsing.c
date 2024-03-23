@@ -132,6 +132,8 @@ t_node	*parsing(char *input)
 
 	head = NULL;
 	str = ft_clean_input(input);
+	if (!*str)
+		return (NULL);
 	if (!ft_first_check(str))
 		return (NULL);
 	if (ft_build_cmds(str, &head) == -1)
