@@ -95,6 +95,14 @@ typedef struct s_exp
     t_list  *head;
     int     flag;
 }   t_exp;
+
+typedef struct s_exp_herdoc
+{
+    char    *buffer1;
+    char    *buffer2;
+    int     i;
+}   t_exp_herdoc;
+
 ///////////////////////////////////////////////////////////////
 // int		ft_strcmp(const char *s1, const char *s2);
 // char	**ft_split(char const *str, char c);
