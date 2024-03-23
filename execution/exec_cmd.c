@@ -10,8 +10,8 @@ int	is_builting(char **cmd, t_var *var)
 		ft_echo(cmd, var);
 	else if (!ft_strcmp("exit", cmd[0]))
 		ft_exit(var, cmd);
-	// else if (!ft_strcmp("cd", cmd[0]))
-	// 	ft_cd(var, cmd);
+	else if (!ft_strcmp("cd", cmd[0]))
+		ft_cd(var, cmd);
 	else if (!ft_strcmp("unset", cmd[0]))
 		ft_unset(var, cmd);
 	else if (!ft_strcmp("export", cmd[0]))
