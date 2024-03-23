@@ -7,34 +7,65 @@ void	ft_start_with(char *s, bool *flag)
 	else
 		*flag = true;
 }
+
+void	init_var_exp_her(t_exp_herdoc *exp_her)
+{
+	exp_her->i = 0;
+	exp_her->buffer1 = NULL;
+	exp_her->buffer2 = NULL;
+}
+
+void	handle_expande_herdoc(char *str , t_var *var, t_exp_herdoc *exp_her)
+{
+	if (str[exp_her->i] == '$')
+	{
+		exp_her->buffer2 = ft_chartostr(str[exp_her->i]);
+		exp_her->i++;
+		while (str[exp_her->i] && !is_del(str[exp_her->i]))
+		{
+			exp_her->buffer2 = ft_strjoin_2(exp_her->buffer2, ft_chartostr(str[exp_her->i]));
+			exp_her->i++;
+		}
+		if(str[exp_her->i] == '?' && (str[exp_her->i + 1] == ' ' || !str[exp_her->i + 1]))
+			exp_her->buffer1 = ft_strjoin_2(exp_her->buffer1, ft_itoa(var->status));
+		else
+			exp_her->buffer1 = ft_strjoin_2(exp_her->buffer1, ft_search_var(exp_her->buffer2 + 1, var));
+		if (str[exp_her->i] != '?')
+			exp_her->buffer1 = ft_strjoin_2(exp_her->buffer1, ft_chartostr(str[exp_her->i]));
+	}
+	else
+		exp_her->buffer1 = ft_strjoin_2(exp_her->buffer1, ft_chartostr(str[exp_her->i]));
+}
+
 char	*expand_herdoc(char *str, t_var *var)
 {
-	char	*buffer1;
-	char	*buffer2;
-	int i;
+	t_exp_herdoc exp_her;
 
-	i = 0;
-	buffer1 = NULL;
-	buffer2 = NULL;
-	while (str[i])
+	init_var_exp_her(&exp_her);
+	while (str[exp_her.i])
 	{
-		if (str[i] == '$')
-		{
-			buffer2 = ft_chartostr(str[i]);
-			i++;
-			while (str[i] && !is_del(str[i]))
-			{
-				buffer2 = ft_strjoin_2(buffer2, ft_chartostr(str[i]));
-				i++;
-			}
-			buffer1 = ft_strjoin_2(buffer1, ft_search_var(buffer2 + 1, var));
-			buffer1 = ft_strjoin_2(buffer1, ft_chartostr(str[i]));
-		}
-		else
-			buffer1 = ft_strjoin_2(buffer1, ft_chartostr(str[i]));
-		if(!str[i])
+		handle_expande_herdoc(str, var, &exp_her);
+		// if (str[exp_her.i] == '$')
+		// {
+		// 	exp_her.buffer2 = ft_chartostr(str[exp_her.i]);
+		// 	exp_her.i++;
+		// 	while (str[exp_her.i] && !is_del(str[exp_her.i]))
+		// 	{
+		// 		exp_her.buffer2 = ft_strjoin_2(exp_her.buffer2, ft_chartostr(str[exp_her.i]));
+		// 		exp_her.i++;
+		// 	}
+		// 	if(str[exp_her.i] == '?' && (str[exp_her.i + 1] == ' ' || !str[exp_her.i + 1]))
+		// 		exp_her.buffer1 = ft_strjoin_2(exp_her.buffer1, ft_itoa(var->status));
+		// 	else
+		// 		exp_her.buffer1 = ft_strjoin_2(exp_her.buffer1, ft_search_var(exp_her.buffer2 + 1, var));
+		// 	if (str[exp_her.i] != '?')
+		// 		exp_her.buffer1 = ft_strjoin_2(exp_her.buffer1, ft_chartostr(str[exp_her.i]));
+		// }
+		// else
+		// 	exp_her.buffer1 = ft_strjoin_2(exp_her.buffer1, ft_chartostr(str[exp_her.i]));
+		if(!str[exp_her.i])
 			break;
-		i++;
+		exp_her.i++;
 	}
-	return (free(str), buffer1);
+	return (free(str), exp_her.buffer1);
 }
