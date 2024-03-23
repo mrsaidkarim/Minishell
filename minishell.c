@@ -1,5 +1,14 @@
 #include "included/minishell.h"
 
+
+void sigint_handler(int sig) {
+    (void)sig;
+    ft_putstr_fd("\n", STDOUT_FILENO);
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
+}
+
 int main(int ac, char **av, char **env)
 {
    char *input;
@@ -9,8 +18,10 @@ int main(int ac, char **av, char **env)
     (void)ac;
     (void)av;
    initialization(&g_var, env);
+   rl_catch_signals = 0;
     while (1)
     {
+        signal(SIGINT, sigint_handler);
         input = readline("\033[1;32m->Prompt: \033[0m");
         if (input && input[0])
         {
