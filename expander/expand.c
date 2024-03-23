@@ -1,5 +1,21 @@
 #include "../included/minishell.h"
 
+
+int	size_list(t_list *head)
+{
+	int size;
+	t_list *tmp;
+
+	size = 0;
+	tmp = head;
+	while (tmp)
+	{
+		size++;
+		tmp = tmp->next;
+	}
+	return (size);
+}
+
 char	**ft_list_to_2d(t_list *head)
 {
 	t_list	*tmp;
@@ -9,18 +25,12 @@ char	**ft_list_to_2d(t_list *head)
 
 	if (!head)
 		return (NULL);
-	tmp = head;
-	size = 0;
-	while (tmp)
-	{
-		size++;
-		tmp = tmp->next;
-	}
-	tmp = head;
+	size = size_list(head);
 	tab = malloc(sizeof(char *) * (size + 1));
 	if (!tab)
 		allocate_error(strerror(errno));
 	i = 0;
+	tmp = head;
 	while (tmp)
 	{
 		tab[i] = ft_strdup((char *)tmp->content);
@@ -34,10 +44,10 @@ char	**ft_list_to_2d(t_list *head)
 char	*ft_strjoin_2(char *s1, char *s2)
 {
 	char	*ptr;
-	char	*origin;
-	int		i = 0;
-	int		j = 0;
+	int		i;
+	int		j;
 
+	(1) && (i = 0, j = 0);
 	if (!s1 && !s2)
 		return (NULL);
 	if (!s1)
@@ -47,14 +57,13 @@ char	*ft_strjoin_2(char *s1, char *s2)
 	ptr = (char *)malloc(((ft_strlen(s1) + ft_strlen(s2)) + 1) * sizeof(char));
 	if (!ptr)
 		return (NULL);
-	origin = ptr;
 	while (s1[i])
 		(1) && (ptr[i] = s1[i], i++);
 	while (s2[j])
 		(1) && (ptr[i] = s2[j], i++, j++);
 	ptr[i] = '\0';
 	(free(s1), free(s2));
-	return (origin);
+	return (ptr);
 }
 
 t_list	*ft_lstnew(void *content)
@@ -378,6 +387,20 @@ void	ft_dollar(t_exp *exp, char *prompt, t_var *var)
 
 //////////////// new expand
 
+void	free_list(t_list **head)
+{
+	t_list	*tmp;
+
+	while (*head)
+	{
+		tmp = *head;
+		(*head) = (*head)->next;
+		free(tmp->content);
+		free(tmp);
+	}
+	(*head) = NULL;
+}
+
 int	is_del(char c)
 {
 	if (ft_isalnum(c))
@@ -467,7 +490,7 @@ char	**ft_expand(char *prompt, t_var *var)
 	}
 	ft_print_lst(exp.head);
 	tab = ft_list_to_2d(exp.head);
-	// exit(50);
+	free_list(&exp.head);
 	return (tab);
 }
 
