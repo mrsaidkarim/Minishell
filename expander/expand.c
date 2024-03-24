@@ -310,7 +310,14 @@ char	**ft_expand(char *prompt, t_var *var)
 				if (!check_etoile(exp.buffer1) && !exp.flag)
 					ft_list_cwd(&exp.head);
 				else
+				{
+					if (!ft_strcmp("~", exp.buffer1))
+					{
+						free(exp.buffer1);
+						exp.buffer1 = ft_strdup(getenv("HOME"));
+					}
 					ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
+				}
 				exp.buffer1 = NULL;
 				exp.flag = 0;
 			}
@@ -370,7 +377,14 @@ char	**ft_expand(char *prompt, t_var *var)
 		if (!check_etoile(exp.buffer1) && !exp.flag)
 			ft_list_cwd(&exp.head);
 		else
+		{
+			if (!ft_strcmp("~", exp.buffer1))
+			{
+				free(exp.buffer1);
+				exp.buffer1 = ft_strdup(getenv("HOME"));
+			}
 			ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
+		}
 		exp.buffer1 = NULL;
 		exp.flag = 0;
 	}
