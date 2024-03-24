@@ -251,7 +251,7 @@ int	ft_heredoc(t_redir *node, t_var *var)
 
 	if (!check_pipe(tab))
 		return (var->status = 1, -1);
-	ft_start_with(node->file, &node->flg);
+	ft_check_expand(node->file, &node->flg);
 	node->file = expand_file(node->file);
 	if (!isatty(STDOUT_FILENO))
 	{
