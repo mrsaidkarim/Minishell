@@ -320,11 +320,12 @@ void	error_cmd_not_found(char *cmd)
 }
 
 
-int	check_slach(char *s)
+int	check_slach(char *s, t_var *var)
 {
 	if (find_char(s, '/') == -1)
 	{
 		error_cmd_not_found(s);
+		var->status = 1;
 		return (1);
 	}
 	return (0);
@@ -348,7 +349,7 @@ void	exec_cmd(t_node *node,t_var *var)
 			path = get_path(node->cmd[0], var);
 			if (!path)
 			{
-				if (!check_slach(node->cmd[0]))
+				if (!check_slach(node->cmd[0], var))
 					chdild_exec_2(node->cmd[0], node->cmd, var);
 				return_in_out_fd(var);
 				return ;
