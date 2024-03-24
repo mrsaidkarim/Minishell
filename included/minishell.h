@@ -136,7 +136,7 @@ int	    ft_find_bclose(char *line, int i);
 int	    ft_check_syntax_combination(char *line, int *index, int *bclose, t_token tok);
 t_node	*ft_create_cmd(char *str, int len, t_token tok, t_redir *redlist);
 int	    ft_add_back(t_node **head, t_node *new);
-t_node    *parsing(char *input);
+t_node	*parsing(char *input, t_var *var);
 t_node	*ft_infix_postfix(t_node **head);
 t_node	*ft_infix_postfix(t_node **head);
 void	ft_build_tree(t_node *head);
