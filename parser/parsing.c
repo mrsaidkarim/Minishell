@@ -85,7 +85,7 @@ int	ft_prepare_cmd(char *line, int *i, t_node **head)
 }
 
 // Tokenizes the input line and builds a linked list of commands with associated tokens and redirections.
-int	ft_build_cmds(char *line, t_node **head)
+int	ft_build_cmds(char *line, t_node **head, t_var *var)
 {
 	int	i;
 	int	last_brkt_close;
@@ -96,19 +96,19 @@ int	ft_build_cmds(char *line, t_node **head)
 	while (line[i])
 	{
 		prev_i = i;
-		if (ft_check_delim(line, i))
+		if (ft_check_delim(line, i) > 0)
 		{
 			if (ft_check_syntax_combination(line, &i, &last_brkt_close,
 					check_tok(line + i)) == -1)
-				return (-1);
+				return (var->status = 258, -1);
 			ft_add_back(head, ft_create_cmd(NULL, prev_i - i,
 					check_tok(line + prev_i), NULL));
 		}
+		else if (ft_check_delim(line, i) == -1)
+			return (ft_print_syntax_error("near unexpected token", "&", 1), var->status = 258,-1);
 		else
-		{
 			if (ft_prepare_cmd(line, &i, head) == -1)
-				return (-1);
-		}
+				return (var->status = 258, -1);
 	}
 	return (0);
 }
@@ -122,23 +122,21 @@ void displayTreeInorder(t_node *root) {
     }
 }
 
-t_node	*parsing(char *input)
+t_node	*parsing(char *input, t_var *var)
 {
 	t_node	*head;
 	char	*str;
 	t_node 	*tmp;
 	t_redir	*t;
-	// t_token	tok;
 
 	head = NULL;
 	str = ft_clean_input(input);
 	if (!*str)
 		return (NULL);
 	if (!ft_first_check(str))
+		return (var->status = 258, NULL);
+	if (ft_build_cmds(str, &head, var) == -1)
 		return (NULL);
-	if (ft_build_cmds(str, &head) == -1)
-		return (NULL);
-	head = ft_infix_postfix(&head);
 	printf("------------------------\n");
 	tmp = head;
 	while (tmp)
@@ -153,6 +151,7 @@ t_node	*parsing(char *input)
 		printf("\n");
 		tmp = tmp->rchild;
 	}
+	head = ft_infix_postfix(&head);
 	printf("------------tree------------\n");
 	while(head->rchild)
 		head = head->rchild;
