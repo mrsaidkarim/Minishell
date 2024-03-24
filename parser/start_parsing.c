@@ -7,13 +7,19 @@ int	ft_print_syntax_error(char *msg, char *c, int count)
 
 	i = -1;
 	if (!c)
-		printf("bash: syntax error %s\n", msg);
+	{
+		ft_putstr_fd("bash: syntax error ", 2);
+		ft_putstr_fd(msg, 2);
+		ft_putstr_fd("\n", 2);
+	}
 	else
 	{
-		printf("bash: syntax error %s `", msg);
+		ft_putstr_fd("bash: syntax error ", 2);
+		ft_putstr_fd(msg, 2);
+		ft_putstr_fd(" `", 2);
 		while (++i < count)
-			printf("%c", c[i]);
-		printf("'\n");
+			write(1, &c[i], 1);
+		ft_putstr_fd("'\n", 2);
 	}
 	return (-1);
 }
