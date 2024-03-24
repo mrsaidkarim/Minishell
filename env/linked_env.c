@@ -1,6 +1,5 @@
 #include "../included/minishell.h"
 
-
 t_env	*ft_creat_env(char *env, char *var, char *content)
 {
 	t_env *node;
@@ -58,6 +57,6 @@ int	ft_env_replace(t_env *env, char *key, char *value)
     free(env->content);
     free(env->env);
     env->env = new_env;
-	env->content = value;
+	env->content = ft_strdup(value);
 	return (0);
 }
