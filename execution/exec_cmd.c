@@ -162,65 +162,6 @@ void	chdild_exec_2(char *path, char **cmd, t_var *var)
 	// var->status = WEXITSTATUS(status);
 }
 
-// void	redirct_output(t_redir *redirect, char c)
-// {
-// 	if (c == 'o')
-// 	{
-// 		dup2(redirect->fd, STDOUT_FILENO);
-// 		close(redirect->fd);
-// 	}
-// 	else if (c == 'i')
-// 	{
-// 		dup2(redirect->fd, STDIN_FILENO);
-// 		close(redirect->fd);
-// 	}
-// }
-
-// int	_open_f(t_node *node, char c, t_var *var)
-// {
-// 	int fd;
-// 	static int	keep;
-
-// 	if (c != 'r')
-// 	{
-// 		if (node->redirection->tok == IN)
-// 			fd = open(node->redirection->file, O_RDONLY);
-// 		else if (node->redirection->tok == OUT)
-// 			fd = open(node->redirection->file, O_CREAT | O_RDWR | O_TRUNC, 0664);
-// 		if (fd < 0)
-// 		{
-// 			printf("faild to open the file!\n");
-// 			var->status = 1;
-// 			return (-1);
-// 		}
-// 		node->redirection->fd = fd;
-// 		if (node->redirection->tok == OUT)
-// 		{
-// 			keep = dup(STDOUT_FILENO);
-// 			redirct_output(node->redirection, 'o');
-// 		}
-// 		else if (node->redirection->tok == IN)
-// 		{
-// 			keep = dup(STDIN_FILENO);
-// 			redirct_output(node->redirection, 'i');
-// 		}
-// 	}
-// 	else
-// 	{
-// 		if (node->redirection->tok == OUT)
-// 		{
-// 			dup2(keep, STDOUT_FILENO);
-// 			close(keep);
-// 		}
-// 		else if (node->redirection->tok == IN)
-// 		{
-// 			dup2(keep, STDIN_FILENO);
-// 			close(keep);
-// 		}
-// 	}
-// 	return (1);
-// }
-/////////////////////////////////////////////////////////////////////////////////////////
 
 bool	start_herdoc(t_redir *node, t_var *var, int tab[2])
 {
@@ -245,9 +186,7 @@ bool	start_herdoc(t_redir *node, t_var *var, int tab[2])
 int	ft_heredoc(t_redir *node, t_var *var)
 {
 	int		tab[2];
-	// char	*input;
 	int		save_fd;
-	// char	*str;
 
 	if (!check_pipe(tab))
 		return (var->status = 1, -1);
@@ -262,23 +201,6 @@ int	ft_heredoc(t_redir *node, t_var *var)
 	{
 		if (start_herdoc(node, var, tab))
 			break;
-		// if (!isatty(STDOUT_FILENO))
-		// {
-		// 	save_fd = dup(STDOUT_FILENO);
-		// 	dup2(var->fd_output, STDOUT_FILENO);
-		// }
-		// input = readline("\033[1;31mheredoc> \033[0m");
-		// if (!input || !ft_strcmp(input, node->file))
-		// {
-		// 	free(input);
-		// 	break;
-		// }
-		// if (node->flg)
-		// 	input = expand_herdoc(input, var);
-		// str = ft_strjoin(input, "\n");
-		// write(tab[1], str, ft_strlen(str));
-		// free(str);
-		// free(input);
 	}
 	dup2(save_fd, STDOUT_FILENO);
 	return (close(tab[1]), tab[0]);
@@ -316,10 +238,7 @@ int	handle_fd_in(t_node *node)
 			if (fd_in)
 				close(fd_in);
 			tmp->file = expand_file(tmp->file); 
-			// fd_in = open(tmp->file, O_RDONLY, 0644);
 			fd_in = open_file(tmp->file, O_RDONLY, 0644);
-			if (fd_in < 0)
-				return (-1);
 		}
 		else if (tmp->tok == HEREDOC)
 		{
@@ -327,9 +246,10 @@ int	handle_fd_in(t_node *node)
 				close(fd_in);
 			fd_in = tmp->fd;
 		}
+		if (fd_in < 0)
+				return (-1);
 		tmp = tmp->rchild;
 	}
-	// node->fd[0] = fd_in;
 	return (node->fd[0] = fd_in, 1);
 }
 
@@ -359,7 +279,6 @@ int	handle_fd_out(t_node *node)
 			return (-1);
 		tmp = tmp->rchild;
 	}
-	// node->fd[1] = fd_out;
 	return (node->fd[1] = fd_out, 1);
 }
 
@@ -385,37 +304,10 @@ int	handle_in_out_file(t_node *node, t_var *var)
 
 int	handle_rederction(t_node *node, t_var *var)
 {
-	t_redir	*tmp;
-
 	if (node->redirections)
 	{
-		tmp = node->redirections;
-		while (tmp)
-		{
-			if (tmp->tok == HEREDOC)
-			{
-				tmp->fd = ft_heredoc(tmp, var);
-				if (tmp->fd == -1)
-					return (var->status = 1, -1);
-			}
-			tmp = tmp->rchild;
-		}
 		if (handle_in_out_file(node, var) < 0)
 			return (-1);
-		// if (handle_fd_in(node) < 0)
-		// 	return (var->status = 1, -1);
-		// if (handle_fd_out(node) < 0)
-		// 	return (var->status = 1, -1);
-		// if (node->fd[0] != 0)
-		// {
-		// 	dup2(node->fd[0], STDIN_FILENO);
-		// 	close(node->fd[0]);
-		// }
-		// if (node->fd[1] != 0)
-		// {
-		// 	dup2(node->fd[1], STDOUT_FILENO);
-		// 	close(node->fd[1]);
-		// }
 	}
 	return (1);
 }
@@ -426,6 +318,8 @@ void	error_cmd_not_found(char *cmd)
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": command not found\n", 2);
 }
+
+
 int	check_slach(char *s)
 {
 	if (find_char(s, '/') == -1)
@@ -435,6 +329,8 @@ int	check_slach(char *s)
 	}
 	return (0);
 }
+
+
 void	exec_cmd(t_node *node,t_var *var)
 {
 	char *path;
