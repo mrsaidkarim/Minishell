@@ -26,7 +26,7 @@ int main(int ac, char **av, char **env)
         if (input && input[0])
         {
             add_history(input);
-            root = parsing(input);
+            root = parsing(input, &g_var);
             if (!root)
                 continue;
             execution(root, &g_var);
