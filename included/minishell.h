@@ -185,7 +185,6 @@ char    *expand_file(char *file);
 // t_list *ft_expand(char *promt, t_var *var);
 char    **ft_expand(char *promt, t_var *var);
 char	*ft_chartostr(char c);
-int	    ft_is_del(char c, char *set);
 int     find_char(char *env, char c);
 int     is_valid(char c, int fisrt);
 char	**get_paths(t_var *var);
@@ -198,5 +197,7 @@ void	ft_check_expand(char *s, bool *flag);
 
 //// handle errors in execution !
 int	check_pipe(int tab[2]);
+int	ft_heredoc(t_redir *node, t_var *var);
+void	handle_herdoc(t_node *root, t_var *var);
 
 #endif
