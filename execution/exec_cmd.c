@@ -101,19 +101,42 @@ void	error_execve(char *path, int error)
 {
 	ft_putstr_fd("bash: ", 2);
 	ft_putstr_fd(path, 2);
+	ft_putstr_fd(" :", 2);
+	ft_putstr_fd(strerror(errno), 2);
+	ft_putstr_fd("\n", 2);
 	if (error == ENOENT)
-	{
-		ft_putstr_fd(": command not found\n", 2);
 		exit(127);
-	}
-	else if(error == EACCES)
-	{
-		ft_putstr_fd(": Permission denied\n", 2);
-		exit(126);
-	}
+	if (error == EACCES)
+		exit(126);	
 }
 
 void	chdild_exec(char *path, char **cmd, t_var *var)
+{
+	pid_t	pid;
+	int		status;
+	char	**env;
+
+	env = env_list_to_tab(var->env);
+	pid = fork();
+	if (pid < 0)
+	{
+		ft_putstr_fd("faild to creat a child\n", 2);
+		var->status = 1;
+		free_matrix(env);
+		return ;
+	}
+	if (pid == 0)
+	{
+		execve(path, cmd, env);
+		error_execve(path, errno);
+	}
+	waitpid(pid, &status, 0);
+	var->status = status >> 8;
+	free_matrix(env);
+	// var->status = WEXITSTATUS(status);
+}
+
+void	chdild_exec_2(char *path, char **cmd, t_var *var)
 {
 	pid_t	pid;
 	int		status;
@@ -228,7 +251,7 @@ int	ft_heredoc(t_redir *node, t_var *var)
 
 	if (!check_pipe(tab))
 		return (var->status = 1, -1);
-	ft_start_with(node->file, &node->flg);
+	ft_check_expand(node->file, &node->flg);
 	node->file = expand_file(node->file);
 	if (!isatty(STDOUT_FILENO))
 	{
@@ -421,8 +444,7 @@ void	exec_cmd(t_node *node,t_var *var)
 			path = get_path(node->cmd[0], var);
 			if (!path)
 			{
-				error_cmd_not_found(node->cmd[0]);
-				var->status = 127;
+				chdild_exec_2(node->cmd[0], node->cmd, var);
 				return_in_out_fd(var);
 				return ;
 			}

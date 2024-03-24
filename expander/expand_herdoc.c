@@ -1,8 +1,8 @@
 #include "../included/minishell.h"
 
-void	ft_start_with(char *s, bool *flag)
+void	ft_check_expand(char *s, bool *flag)
 {
-	if (*s == '"' || *s == '\'')
+	if (find_char(s, '"') != -1 || find_char(s, '\'') != -1)
 		*flag = false;
 	else
 		*flag = true;

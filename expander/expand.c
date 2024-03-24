@@ -294,6 +294,12 @@ int	is_del(char c)
 	return (1);
 }
 
+int	is_white_space(char c)
+{
+	if (c == ' ' || (c >= 9 && c <= 13) || c == 127)
+		return (1);
+	return (0);
+}
 
 char	**ft_expand(char *prompt, t_var *var)
 {
@@ -303,14 +309,21 @@ char	**ft_expand(char *prompt, t_var *var)
 	ft_init(&exp);
 	while (prompt[exp.i])
 	{
-		if ((prompt[exp.i] == ' ' || prompt[exp.i] == 127) && exp.open == 0)
+		if ((is_white_space(prompt[exp.i])) && exp.open == 0)
 		{
 			if (exp.buffer1)
 			{
 				if (!check_etoile(exp.buffer1) && !exp.flag)
 					ft_list_cwd(&exp.head);
 				else
+				{
+					if (!ft_strcmp("~", exp.buffer1))
+					{
+						free(exp.buffer1);
+						exp.buffer1 = ft_strdup(getenv("HOME"));
+					}
 					ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
+				}
 				exp.buffer1 = NULL;
 				exp.flag = 0;
 			}
@@ -370,7 +383,14 @@ char	**ft_expand(char *prompt, t_var *var)
 		if (!check_etoile(exp.buffer1) && !exp.flag)
 			ft_list_cwd(&exp.head);
 		else
+		{
+			if (!ft_strcmp("~", exp.buffer1))
+			{
+				free(exp.buffer1);
+				exp.buffer1 = ft_strdup(getenv("HOME"));
+			}
 			ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
+		}
 		exp.buffer1 = NULL;
 		exp.flag = 0;
 	}
