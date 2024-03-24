@@ -44,6 +44,7 @@ SRCS = minishell.c \
 	   libft/ft_isalphnum.c \
 	   libft/ft_atoll.c \
 	   builtins/cd.c \
+	   herdoc/handle_herdoc.c \
 
 OBJS = ${SRCS:.c=.o}
 
