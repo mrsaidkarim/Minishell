@@ -29,6 +29,7 @@ int main(int ac, char **av, char **env)
             root = parsing(input, &g_var);
             if (!root)
                 continue;
+            handle_herdoc(root, &g_var);
             execution(root, &g_var);
         }
     }
