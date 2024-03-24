@@ -25,6 +25,8 @@ int	ft_skip_for_quotes(char *line, int *i)
 		(*i)++;
 		while (line[*i] && line[*i] != c)
 			(*i)++;
+		if (!line[*i])
+			return (-1);
 		return (0);
 	}
 	return (ft_check_delim(line, *i));
