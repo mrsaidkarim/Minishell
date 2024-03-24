@@ -31,8 +31,12 @@ int	ft_check_delim(char *str, int i)
 	{
 		if (str[i] == '|' && str[i + 1] == '|')
 			return (2);
+		else if (str[i] == '&' && str[i + 1] == '&' && str[i + 2] == '&')
+			return (-1);
 		else if (str[i] == '&' && str[i + 1] == '&')
 			return (2);
+		else if (str[i] == '&')
+			return (-1);
 		else if (str[i] == '|')
 			return (1);
 		else if (str[i] == ')' || str[i] == '(')
@@ -40,7 +44,7 @@ int	ft_check_delim(char *str, int i)
 		else
 			return (0);
 	}
-	return (0);
+	return (-1);
 }
 
 // Check if this character is a bracket.
