@@ -426,7 +426,15 @@ void	error_cmd_not_found(char *cmd)
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": command not found\n", 2);
 }
-
+int	check_slach(char *s)
+{
+	if (find_char(s, '/') == -1)
+	{
+		error_cmd_not_found(s);
+		return (1);
+	}
+	return (0);
+}
 void	exec_cmd(t_node *node,t_var *var)
 {
 	char *path;
@@ -444,7 +452,8 @@ void	exec_cmd(t_node *node,t_var *var)
 			path = get_path(node->cmd[0], var);
 			if (!path)
 			{
-				chdild_exec_2(node->cmd[0], node->cmd, var);
+				if (!check_slach(node->cmd[0]))
+					chdild_exec_2(node->cmd[0], node->cmd, var);
 				return_in_out_fd(var);
 				return ;
 			}
