@@ -31,7 +31,10 @@ int main(int ac, char **av, char **env)
                 continue;
             handle_herdoc(root, &g_var);
             execution(root, &g_var);
+            freeTree(root);
         }
+        else
+            break ;
     }
     rl_clear_history();
     return (0);
