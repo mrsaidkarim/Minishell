@@ -91,7 +91,7 @@ t_node	*ft_infix_postfix(t_node **head)
 			remove_node(head);
 			while (stack_tok->tok != BRKT_OPEN)
 			{
-				push_to_stack(&stack_tok, &stack_tok);
+				push_to_stack(&stack_tok, &new_stack);
 			}
 			remove_node(&stack_tok);
 		}

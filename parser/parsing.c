@@ -137,7 +137,7 @@ t_node	*parsing(char *input, t_var *var)
 		return (var->status = 258, NULL);
 	if (ft_build_cmds(str, &head, var) == -1)
 		return (free(str), NULL);
-	printf("------------------------\n");
+	printf("----------------------------\n");
 	tmp = head;
 	while (tmp)
 	{
@@ -152,12 +152,26 @@ t_node	*parsing(char *input, t_var *var)
 		tmp = tmp->rchild;
 	}
 	head = ft_infix_postfix(&head);
+	printf("-----------post_fix---------\n");
+	tmp = head;
+	while (tmp)
+	{
+		printf("|%s %d|, red:", tmp->pre_cmd, tmp->tok);
+		t = tmp->redirections;
+		while (t)
+		{
+			printf("%s|,", t->file);
+			t = t->rchild;
+		}
+		printf("\n");
+		tmp = tmp->rchild;
+	}
 	printf("------------tree------------\n");
 	while(head->rchild)
 		head = head->rchild;
 	ft_build_tree(head);
 	displayTreeInorder(head);
-	printf("------------tree------------\n");
+	printf("\n--------------------------\n");
 	free(str);
 	return (head);
 }
