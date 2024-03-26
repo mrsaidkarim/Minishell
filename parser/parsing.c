@@ -42,7 +42,7 @@ t_redir	*ft_create_red(char *line, int *i, t_token tok)
 		line[(*i)++] = 127;
 	while (ft_isspace(line[*i]))
 		line[(*i)++] = 127;
-	if (!line[*i] || (check_tok(line + (*i)) != EXPR))
+	if (!line[*i] || (check_tok(line + (*i)) != EXPR || line[*i] == '&'))
 	{
 		if (!line[*i])
 			ft_print_syntax_error("near unexpected token `newline'", NULL, -1);
@@ -71,14 +71,14 @@ int	ft_prepare_cmd(char *line, int *i, t_node **head)
 		{
 			if (ft_add_red(&red, ft_create_red(line, i,
 						check_tok(line + (*i)))) == -1)
-				return (-1);
+				return (ft_free_red(red), -1);
 		}
 		else
 			(*i)++;
 	}
 	cmd = ft_wordred(line, j, '\0');
 	if (!cmd)
-		return (-1);
+		return (ft_free_red(red), -1);
 	if (ft_add_back(head, ft_create_cmd(cmd, ft_strlen(cmd), EXPR, red)) == -1)
 		return (-1);
 	return (1);
@@ -100,15 +100,15 @@ int	ft_build_cmds(char *line, t_node **head, t_var *var)
 		{
 			if (ft_check_syntax_combination(line, &i, &last_brkt_close,
 					check_tok(line + i)) == -1)
-				return (var->status = 258, -1);
+				return (var->status = 258, ft_free(head), -1);
 			ft_add_back(head, ft_create_cmd(NULL, prev_i - i,
 					check_tok(line + prev_i), NULL));
 		}
 		else if (ft_check_delim(line, i) == -1)
-			return (ft_print_syntax_error("near unexpected token", "&", 1), var->status = 258,-1);
+			return (ft_print_syntax_error("near unexpected token", "&", 1), var->status = 258, ft_free(head), -1);
 		else
 			if (ft_prepare_cmd(line, &i, head) == -1)
-				return (var->status = 258, -1);
+				return (var->status = 258, ft_free(head), -1);
 	}
 	return (0);
 }
@@ -132,11 +132,11 @@ t_node	*parsing(char *input, t_var *var)
 	head = NULL;
 	str = ft_clean_input(input);
 	if (!*str)
-		return (NULL);
+		return (free(str), NULL);
 	if (!ft_first_check(str))
 		return (var->status = 258, NULL);
 	if (ft_build_cmds(str, &head, var) == -1)
-		return (NULL);
+		return (free(str), NULL);
 	printf("------------------------\n");
 	tmp = head;
 	while (tmp)
@@ -158,5 +158,6 @@ t_node	*parsing(char *input, t_var *var)
 	ft_build_tree(head);
 	displayTreeInorder(head);
 	printf("------------tree------------\n");
+	free(str);
 	return (head);
 }
