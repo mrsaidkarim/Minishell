@@ -9,7 +9,18 @@ t_env	*ft_creat_env(char *env, char *var, char *content)
 		allocate_error(strerror(errno));
 	node->env = ft_strdup(env);
 	node->var = var;
-	node->content = content;
+	if (!ft_strcmp(var, "SHLVL"))
+	{
+		if (ft_atoi(content) != 999)
+			node->content = ft_itoa(ft_atoi(content) + 1);
+		else
+			node->content = ft_strdup("");
+		free(node->env);
+		node->env = ft_strjoin("SHLVL=", node->content);
+		free(content);
+	}
+	else
+		node->content = content;
 	node->next = NULL;
 	return (node);
 }
