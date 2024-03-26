@@ -200,7 +200,10 @@ void	ft_add(t_exp *exp)
 		if (exp->buffer1)
 		{
 			if (!check_etoile(exp->buffer1) && !exp->flag)
+			{
 				ft_list_cwd(&exp->head);
+				free(exp->buffer1);
+			}
 			else
 			{
 				if (!ft_strcmp("~", exp->buffer1))
