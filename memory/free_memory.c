@@ -56,6 +56,8 @@ void	freeTree(t_node *root)
 		ft_free_red(root->redirections);
 		if (root->pre_cmd)
 			free(root->pre_cmd);
+		if (root->cmd)
+			free_matrix(root->cmd);
         tmp = root;
 		freeTree(root->lchild);
 		freeTree(root->rchild);
