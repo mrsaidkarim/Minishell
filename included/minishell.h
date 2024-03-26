@@ -200,4 +200,10 @@ int	check_pipe(int tab[2]);
 int	ft_heredoc(t_redir *node, t_var *var);
 void	handle_herdoc(t_node *root, t_var *var);
 
+
+// free allocated data
+void	ft_free_red(t_redir *reds);
+void	ft_free(t_node **head);
+void    freeTree(t_node *root);
+
 #endif
