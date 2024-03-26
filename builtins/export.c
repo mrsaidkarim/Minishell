@@ -74,6 +74,11 @@ void	displaye_env(t_var *var)
 	tmp = copy_env;
 	while (tmp)
 	{
+		if (!ft_strcmp(tmp->var, "PATH") && var->flag)
+		{
+			tmp = tmp->next;
+			continue ;
+		}
 		if (find_char(tmp->env, '=') < 0)
 			printf("declare -x %s\n", tmp->env);
 		else
@@ -105,7 +110,6 @@ bool	check_str_exp(char *s, t_var *var, int *index)
 		i++;
 	if (!len || (s[i] && s[i] != '=' && (s[i] != '+' || s[i + 1] != '=')))
 	{
-		// printf("bash: export: `%s`: not a valid identifier\n", s);
 		errors_export(s);
 		var->status = 1;
 		return (false);
@@ -182,7 +186,7 @@ void	add_var_to_list(t_env *env, char *var_env, char *str, int i)
 
 	if (!str[i])
 	{
-		free(var_env);
+		ft_add_env(&env, ft_creat_env(var_env, var_env, ft_strdup("")));
 		return ;
 	}
 	if (str[i] == '+')
@@ -216,10 +220,12 @@ void	ft_export(t_var *var, char **cmd)
 		{
 			if (!check_str_exp(*cmd, var, &i))
 				continue ;
-			printf("|%c|\n", (*cmd)[i]);
 			var_env = ft_substr(*cmd, 0, i);
 			if (is_existe(var->env, var_env, *cmd, i))
+			{
 				free(var_env);
+				var->flag = 0;
+			}
 			else
 				add_var_to_list(var->env, var_env, *cmd, i);
 			var->status = 0;
