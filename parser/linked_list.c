@@ -6,11 +6,10 @@ t_node	*ft_create_cmd(char *str, int len, t_token tok, t_redir *redlist)
 	t_node	*new;
 
 	new = malloc(sizeof(t_node));
+	(void)len;
 	if (!new)
 		allocate_error(strerror(errno));
-	new->pre_cmd = ft_substr(str, 0, len);
-	if (!new)
-		allocate_error(strerror(errno));
+	new->pre_cmd = str;
 	new->cmd = NULL;
 	new->redirections = NULL;
 	new->tok = tok;
