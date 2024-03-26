@@ -107,7 +107,7 @@ void	error_execve(char *path, int error)
 	if (error == ENOENT)
 		exit(127);
 	if (error == EACCES)
-		exit(126);	
+		exit(126);
 }
 
 void	chdild_exec(char *path, char **cmd, t_var *var)
@@ -127,11 +127,12 @@ void	chdild_exec(char *path, char **cmd, t_var *var)
 	}
 	if (pid == 0)
 	{
+		signal_midl_exec();
 		execve(path, cmd, env);
 		error_execve(path, errno);
 	}
 	waitpid(pid, &status, 0);
-	var->status = status >> 8;
+	var->status = update_status(status);
 	free_matrix(env);
 	// var->status = WEXITSTATUS(status);
 }
@@ -157,7 +158,7 @@ void	chdild_exec_2(char *path, char **cmd, t_var *var)
 		error_execve(path, errno);
 	}
 	waitpid(pid, &status, 0);
-	var->status = status >> 8;
+	var->status = update_status(status);
 	free_matrix(env);
 	// var->status = WEXITSTATUS(status);
 }
@@ -325,7 +326,7 @@ int	check_slach(char *s, t_var *var)
 	if (find_char(s, '/') == -1)
 	{
 		error_cmd_not_found(s);
-		var->status = 1;
+		var->status = 127;
 		return (1);
 	}
 	return (0);

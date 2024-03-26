@@ -77,7 +77,7 @@ void	ft_pipe(t_node *root,t_var *var)
 	close(tab[0]);
 	waitpid(pid_1, &status, 0);
 	waitpid(pid_2, &status, 0);
-	var->status = status >> 8;
+	var->status = update_status(status);
 }
 
 void	execution(t_node *root, t_var *var)
