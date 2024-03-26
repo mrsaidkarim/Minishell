@@ -31,5 +31,6 @@ void	ft_env(t_var *var)
 		printf("%s\n", tmp->env);
 		tmp = tmp->next;
 	}
+	free_matrix(tab);
 	var->status = 0;
 }
