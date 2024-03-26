@@ -67,6 +67,7 @@ typedef struct s_node
 	t_redir			*redirections;
     t_node          *rchild;
     t_node          *lchild;
+    int     index; // to remove
 }	t_node;
 
 
@@ -199,5 +200,16 @@ void	ft_check_expand(char *s, bool *flag);
 int	check_pipe(int tab[2]);
 int	ft_heredoc(t_redir *node, t_var *var);
 void	handle_herdoc(t_node *root, t_var *var);
+///////////////////////////////////////// signals;
+void	signal_midl_exec(void);
+int     update_status(int status);
+void	ft_signal(void);
 
+
+
+
+t_node    *ft_build_tree1(void);
+void    ft_inorder_traversal(t_node *root);
+
+extern int check_signel;
 #endif
