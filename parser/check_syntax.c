@@ -52,11 +52,11 @@ int	ft_check_syntax_combination(char *line, int *index, int *bclose, t_token tok
 		(*index)++;
 	if (tok == BRKT_CLOSE)
 		return (0);
-	if ( (ft_check_delim(line, *index) && check_tok(line + *index) != BRKT_OPEN)|| !line[*index])
+	if ((ft_check_delim(line, *index) && check_tok(line + *index) != BRKT_OPEN)|| !line[*index])
 	{
-		if (ft_check_delim(line, *index))
-			return (ft_print_syntax_error("near unexpected token", &line[*index], 1), -1);
-		return (ft_print_syntax_error("near unexpected token `newline'", NULL, -1));
+		if (!line[*index])
+			return (ft_print_syntax_error("near unexpected token `newline'", NULL, -1));
+		return (ft_print_syntax_error("near unexpected token", &line[*index], 1), -1);
 	}
 	return (0);
 }
