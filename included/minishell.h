@@ -78,6 +78,7 @@ typedef struct s_var
     int 	status;
     int     fd_input;
     int     fd_output;
+    int     flag;
 }   t_var;
 
 typedef struct s_list
