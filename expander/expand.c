@@ -362,13 +362,14 @@ char	**ft_expand(char *prompt, t_var *var)
 				if (!ft_strcmp(exp.buffer2, "$") && prompt[exp.i] != '?')
 						exp.buffer1 = ft_strjoin_2(exp.buffer1, exp.buffer2);
 				else
+				{
 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_search_var(exp.buffer2 + 1, var));
+					free(exp.buffer2);
+				}
 				if (prompt[exp.i] == '?' && (prompt[exp.i + 1] == ' ' || !prompt[exp.i + 1]))
 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_itoa(var->status));
 				else if (prompt[exp.i] && is_del(prompt[exp.i]) && prompt[exp.i] != '$' && (prompt[exp.i + 1] != '\0' && prompt[exp.i + 1] != ' '))
 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
-				// else if (ft_strlen(exp.buffer2) == 1 && !prompt[exp.i])
-				// 	exp.buffer1 = ft_strjoin_2(exp.buffer1, exp.buffer2);
 				exp.buffer2 = NULL;
 			}
 		}
