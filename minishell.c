@@ -17,7 +17,10 @@ int main(int ac, char **av, char **env)
         ft_signal();
         input = readline("\033[1;32m->Prompt: \033[0m");
         if (!input)
+        {
+            ft_putstr_fd("exit\n", 1);
             break ;
+        }
         check_signel = 1;
         add_history(input);
         root = parsing(input, &g_var);
