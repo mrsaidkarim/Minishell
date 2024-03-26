@@ -1,37 +1,35 @@
 #include "included/minishell.h"
 
 
-void sigint_handler(int sig) {
-    (void)sig;
-    ft_putstr_fd("\n", STDOUT_FILENO);
-    rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
-}
+int check_signel  = 0;
 
 int main(int ac, char **av, char **env)
 {
-   char *input;
-//    char **cmd;
+    char *input;
     t_var g_var;
     t_node *root = NULL;
     (void)ac;
     (void)av;
+    // check_signel = 0;
    initialization(&g_var, env);
-   rl_catch_signals = 0;
     while (1)
     {
-        signal(SIGINT, sigint_handler);
+        ft_signal();
         input = readline("\033[1;32m->Prompt: \033[0m");
         if (input && input[0])
         {
+            check_signel = 1;
             add_history(input);
             root = parsing(input, &g_var);
             if (!root)
                 continue;
             handle_herdoc(root, &g_var);
             execution(root, &g_var);
+            check_signel = 0;
+            return_in_out_fd(&g_var);
         }
+        else
+            break ;
     }
     rl_clear_history();
     return (0);
