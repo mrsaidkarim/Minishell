@@ -47,6 +47,9 @@ void	ft_main_env(t_var *var)
 	tmp = ft_strjoin("_=", "/usr/bin/env");
 	ft_add_env(&var->env, ft_creat_env(tmp, ft_strdup("_"), ft_strdup("/usr/bin/env")));
 	free(tmp);
+	tmp = ft_strdup("OLDPWD");
+	ft_add_env(&var->env, ft_creat_env(tmp, ft_strdup(tmp), ft_strdup("")));
+	free(tmp);
 	tmp = NULL;
 	var->flag = 1;
 }
