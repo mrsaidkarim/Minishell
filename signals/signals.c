@@ -23,7 +23,7 @@ int	update_status(int status)
 void	sigint_handler(int sig)
 {
 	(void) sig;
-	if (!check_signel)
+	if (!g_signel)
 	{
 		ft_putstr_fd("\n", STDOUT_FILENO);
 		rl_on_new_line();
