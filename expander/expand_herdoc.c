@@ -11,36 +11,45 @@ void	ft_check_expand(char *s, bool *flag)
 void	init_var_exp_her(t_exp_herdoc *exp_her)
 {
 	exp_her->i = 0;
-	exp_her->buffer1 = NULL;
-	exp_her->buffer2 = NULL;
+	exp_her->bf1 = NULL;
+	exp_her->bf2 = NULL;
 }
 
-void	handle_expande_herdoc(char *str, t_var *var, t_exp_herdoc *exp_her)
+void	stor_var(char *str, t_exp_herdoc *ex_her)
 {
-	if (str[exp_her->i] == '$')
+	while (str[ex_her->i] && !is_del(str[ex_her->i]))
 	{
-		exp_her->buffer2 = ft_chartostr(str[exp_her->i]);
-		exp_her->i++;
-		while (str[exp_her->i] && !is_del(str[exp_her->i]))
+		ex_her->bf2 = ft_strjoin_2(ex_her->bf2,
+				ft_chartostr(str[ex_her->i]));
+		ex_her->i++;
+	}
+}
+
+void	handle_expande_herdoc(char *str, t_var *var, t_exp_herdoc *ex_her)
+{
+	if (str[ex_her->i] == '$')
+	{
+		ex_her->bf2 = ft_chartostr(str[ex_her->i]);
+		ex_her->i++;
+		stor_var(str, ex_her);
+		if (str[ex_her->i] == '?' && (str[ex_her->i + 1] == ' '
+				|| !str[ex_her->i + 1]))
 		{
-			exp_her->buffer2 = ft_strjoin_2(exp_her->buffer2,
-					ft_chartostr(str[exp_her->i]));
-			exp_her->i++;
+			ex_her->bf1 = ft_strjoin_2(ex_her->bf1, ft_itoa(var->status));
+			free(ex_her->bf2);
 		}
-		if (str[exp_her->i] == '?' && (str[exp_her->i + 1] == ' '
-				|| !str[exp_her->i + 1]))
-			exp_her->buffer1 = ft_strjoin_2(exp_her->buffer1,
-					ft_itoa(var->status));
 		else
-			exp_her->buffer1 = ft_strjoin_2(exp_her->buffer1,
-					ft_search_var(exp_her->buffer2 + 1, var));
-		if (str[exp_her->i] != '?')
-			exp_her->buffer1 = ft_strjoin_2(exp_her->buffer1,
-					ft_chartostr(str[exp_her->i]));
+		{
+			ex_her->bf1 = ft_strjoin_2(ex_her->bf1,
+					ft_search_var(ex_her->bf2 + 1, var));
+			free(ex_her->bf2);
+		}
+		if (str[ex_her->i] != '?')
+			ex_her->bf1 = ft_strjoin_2(ex_her->bf1,
+					ft_chartostr(str[ex_her->i]));
 	}
 	else
-		exp_her->buffer1 = ft_strjoin_2(exp_her->buffer1,
-				ft_chartostr(str[exp_her->i]));
+		ex_her->bf1 = ft_strjoin_2(ex_her->bf1, ft_chartostr(str[ex_her->i]));
 }
 
 char	*expand_herdoc(char *str, t_var *var)
@@ -55,5 +64,5 @@ char	*expand_herdoc(char *str, t_var *var)
 			break ;
 		exp_her.i++;
 	}
-	return (free(str), exp_her.buffer1);
+	return (free(str), exp_her.bf1);
 }
