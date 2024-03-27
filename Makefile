@@ -56,6 +56,8 @@ SRCS = minishell.c \
 	  utils_expand/linked_list_expd.c \
 	  utils_expand/utils_expd.c \
 	  utils_expand/utils_help_expd.c \
+	  memory/free_list_env.c \
+	#herdoc/error_and_herdoc.c 
 
 OBJS = ${SRCS:.c=.o}
 
