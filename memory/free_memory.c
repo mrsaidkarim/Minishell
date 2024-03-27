@@ -64,3 +64,12 @@ void	free_tree(t_node *root)
 		free(tmp);
 	}
 }
+
+// free all data
+void	free_all(t_var *var)
+{
+	free_list_env(var);
+	rl_clear_history();
+	close(var->fd_input);
+	close(var->fd_output);
+}
