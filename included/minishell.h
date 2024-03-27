@@ -90,8 +90,8 @@ typedef struct s_list
 
 typedef struct s_exp
 {
-    char    *buffer1;
-    char    *buffer2;
+    char    *bf1;
+    char    *bf2;
     int     open;
     int     i;
     t_list  *head;
@@ -218,6 +218,6 @@ extern int check_signel;
 // free allocated data
 void	ft_free_red(t_redir *reds);
 void	ft_free(t_node **head);
-void    freeTree(t_node *root);
+void    free_tree(t_node *root);
 
 #endif

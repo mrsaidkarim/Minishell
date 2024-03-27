@@ -18,8 +18,8 @@ void	errors_unset(char *s)
 
 int	check_var(char *str)
 {
-	int len;
-	int i;
+	int	len;
+	int	i;
 
 	i = 0;
 	len = 0;
@@ -32,7 +32,6 @@ int	check_var(char *str)
 		i++;
 	if (!len || (str[i] && !is_valid(str[i], 0)))
 	{
-		// printf("bash: unset: `%s`: not a valid identifier\n", str);
 		errors_unset(str);
 		return (false);
 	}
@@ -43,7 +42,7 @@ void	delete_node(t_var *var, t_env *node, int check)
 {
 	t_env	*tmp;
 
-	if(!check)
+	if (!check)
 	{
 		tmp = var->env;
 		var->env = var->env->next;
@@ -53,14 +52,13 @@ void	delete_node(t_var *var, t_env *node, int check)
 		tmp = node->next;
 		node->next = node->next->next;
 	}
-	printf("%s\n" , tmp->env);
 	(free(tmp->env), free(tmp->var), free(tmp->content));
 	(free(tmp), tmp = NULL);
 }
 
 void	handle_unset(t_var *var, char *tmp, t_env *list, t_env *save)
 {
-	int check;
+	int	check;
 
 	if (!check_var(tmp))
 	{
@@ -74,7 +72,7 @@ void	handle_unset(t_var *var, char *tmp, t_env *list, t_env *save)
 		if (!ft_strcmp(list->var, tmp))
 		{
 			delete_node(var, save, check);
-			break;
+			break ;
 		}
 		save = list;
 		list = list->next;

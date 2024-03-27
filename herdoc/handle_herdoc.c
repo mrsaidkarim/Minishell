@@ -26,7 +26,6 @@ void	_herdoc_(t_node *node, t_var *var)
 	}
 }
 
-
 void	handle_herdoc(t_node *root, t_var *var)
 {
 	if (!root)

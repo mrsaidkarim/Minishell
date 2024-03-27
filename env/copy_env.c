@@ -17,7 +17,7 @@ void	init_g_var(t_var *var)
 
 int	find_char(char *env, char c)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (env[++i])
@@ -27,6 +27,7 @@ int	find_char(char *env, char c)
 	}
 	return (-1);
 }
+
 void	ft_main_env(t_var *var)
 {
 	char	*cwd;
@@ -42,19 +43,21 @@ void	ft_main_env(t_var *var)
 	ft_add_env(&var->env, ft_creat_env(tmp, ft_strdup("PATH"), path));
 	free(tmp);
 	tmp = ft_strjoin("SHLVL=", "1");
-	ft_add_env(&var->env, ft_creat_env(tmp, ft_strdup("SHLVL"), ft_strdup("1")));
+	ft_add_env(&var->env, ft_creat_env(tmp, ft_strdup("SHLVL"),
+			ft_strdup("1")));
 	free(tmp);
 	tmp = ft_strjoin("_=", "/usr/bin/env");
-	ft_add_env(&var->env, ft_creat_env(tmp, ft_strdup("_"), ft_strdup("/usr/bin/env")));
+	ft_add_env(&var->env, ft_creat_env(tmp, ft_strdup("_"),
+			ft_strdup("/usr/bin/env")));
 	free(tmp);
 	tmp = ft_strdup("OLDPWD");
-	ft_add_env(&var->env, ft_creat_env(tmp, ft_strdup(tmp), ft_strdup("")));
+	ft_add_env(&var->env, ft_creat_env(tmp, ft_strdup(tmp),
+			ft_strdup("")));
 	free(tmp);
-	tmp = NULL;
 	var->flag = 1;
 }
 
-void	initialization(t_var *var,char **env)
+void	initialization(t_var *var, char **env)
 {
 	int	i;
 
@@ -68,7 +71,8 @@ void	initialization(t_var *var,char **env)
 	while (*env)
 	{
 		i = find_char(*env, '=');
-		ft_add_env(&var->env, ft_creat_env(*env, ft_substr(*env, 0, i), ft_strdup(*env + i + 1)));
+		ft_add_env(&var->env, ft_creat_env(*env, ft_substr(*env, 0, i),
+				ft_strdup(*env + i + 1)));
 		env++;
 	}
 }

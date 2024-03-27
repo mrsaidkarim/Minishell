@@ -1,8 +1,9 @@
 #include "../included/minishell.h"
 
+// this function creat a new node that will represent env 
 t_env	*ft_creat_env(char *env, char *var, char *content)
 {
-	t_env *node;
+	t_env	*node;
 
 	node = malloc(sizeof(t_env));
 	if (!node)
@@ -25,9 +26,10 @@ t_env	*ft_creat_env(char *env, char *var, char *content)
 	return (node);
 }
 
+// this function add the new node in the last of list 
 void	ft_add_env(t_env **head, t_env *new)
 {
-	t_env *tmp;
+	t_env	*tmp;
 
 	if (!head)
 		return ;
@@ -42,7 +44,8 @@ void	ft_add_env(t_env **head, t_env *new)
 	}
 }
 
-// Searches for an environment variable by its key and returns a pointer to its node.
+/* Searches for an environment variable by its 
+key and returns a pointer to its node.*/
 t_env	*ft_env_search(t_env *env, char *key)
 {
 	while (env)
@@ -57,17 +60,17 @@ t_env	*ft_env_search(t_env *env, char *key)
 // Replaces the value of an environment variable with a new value.
 int	ft_env_replace(t_env *env, char *key, char *value)
 {
-    char    *new_env;
-    char    *tmp;
+	char	*new_env;
+	char	*tmp;
 
 	if (!env)
 		return (-1);
-    tmp = ft_strjoin(key, "=");
-    new_env = ft_strjoin(tmp, value);
-    free(tmp);
-    free(env->content);
-    free(env->env);
-    env->env = new_env;
+	tmp = ft_strjoin(key, "=");
+	new_env = ft_strjoin(tmp, value);
+	free(tmp);
+	free(env->content);
+	free(env->env);
+	env->env = new_env;
 	env->content = ft_strdup(value);
 	return (0);
 }

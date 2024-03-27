@@ -1,10 +1,10 @@
 #include "../included/minishell.h"
 
-char *expand_file(char *file)
+char	*expand_file(char *file)
 {
-	int open;
-	char *buffer;
-	int i;
+	int		open;
+	char	*buffer;
+	int		i;
 
 	open = 0;
 	buffer = NULL;

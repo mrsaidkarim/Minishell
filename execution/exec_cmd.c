@@ -2,7 +2,7 @@
 
 int	is_builting(char **cmd, t_var *var)
 {
-	if (!ft_strcmp("env",cmd[0]))
+	if (!ft_strcmp("env", cmd[0]))
 		ft_env(var);
 	else if (!ft_strcmp("pwd", cmd[0]))
 		ft_pwd(var);
@@ -23,17 +23,18 @@ int	is_builting(char **cmd, t_var *var)
 
 char	**get_paths(t_var *var)
 {
-	t_env *tmp;
+	t_env	*tmp;
 
 	tmp = var->env;
 	while (tmp)
 	{
-		if (!ft_strcmp("PATH",tmp->var))
+		if (!ft_strcmp("PATH", tmp->var))
 			return (ft_split(tmp->content, ':'));
 		tmp = tmp->next;
 	}
 	return (NULL);
 }
+
 char	*get_path(char *cmd, t_var *var)
 {
 	char	**paths;
@@ -52,7 +53,7 @@ char	*get_path(char *cmd, t_var *var)
 		part_path = ft_strjoin(paths[i], "/");
 		path = ft_strjoin(part_path, cmd);
 		if (access(path, F_OK) == 0)
-			return (free_matrix(paths), free(part_path) ,path);
+			return (free_matrix(paths), free(part_path), path);
 		free(path);
 		free(part_path);
 	}
@@ -77,7 +78,7 @@ int	ft_size_list(t_env *env)
 char	**env_list_to_tab(t_env *env)
 {
 	int		size;
-	int 	i;
+	int		i;
 	t_env	*tmp;
 	char	**tab;
 
@@ -134,7 +135,6 @@ void	chdild_exec(char *path, char **cmd, t_var *var)
 	waitpid(pid, &status, 0);
 	var->status = update_status(status);
 	free_matrix(env);
-	// var->status = WEXITSTATUS(status);
 }
 
 void	chdild_exec_2(char *path, char **cmd, t_var *var)
@@ -160,9 +160,7 @@ void	chdild_exec_2(char *path, char **cmd, t_var *var)
 	waitpid(pid, &status, 0);
 	var->status = update_status(status);
 	free_matrix(env);
-	// var->status = WEXITSTATUS(status);
 }
-
 
 bool	start_herdoc(t_redir *node, t_var *var, int tab[2])
 {
@@ -202,7 +200,7 @@ int	ft_heredoc(t_redir *node, t_var *var)
 	while (1)
 	{
 		if (start_herdoc(node, var, tab))
-			break;
+			break ;
 	}
 	if (save_fd != -1)
 	{
@@ -212,12 +210,12 @@ int	ft_heredoc(t_redir *node, t_var *var)
 	return (close(tab[1]), tab[0]);
 }
 
-int open_file(char *path, int flag, mode_t mode)
+int	open_file(char *path, int flag, mode_t mode)
 {
-	int fd;
+	int	fd;
 
 	fd = open(path, flag, mode);
-	if (fd == - 1)
+	if (fd == -1)
 	{
 		ft_putstr_fd("bash: ", 2);
 		ft_putstr_fd(path, 2);
@@ -243,7 +241,7 @@ int	handle_fd_in(t_node *node)
 		{
 			if (fd_in)
 				close(fd_in);
-			tmp->file = expand_file(tmp->file); 
+			tmp->file = expand_file(tmp->file);
 			fd_in = open_file(tmp->file, O_RDONLY, 0644);
 		}
 		else if (tmp->tok == HEREDOC)
@@ -253,7 +251,7 @@ int	handle_fd_in(t_node *node)
 			fd_in = tmp->fd;
 		}
 		if (fd_in < 0)
-				return (-1);
+			return (-1);
 		tmp = tmp->rchild;
 	}
 	return (node->fd[0] = fd_in, 1);
@@ -307,7 +305,6 @@ int	handle_in_out_file(t_node *node, t_var *var)
 	return (1);
 }
 
-
 int	handle_rederction(t_node *node, t_var *var)
 {
 	if (node->redirections)
@@ -325,7 +322,6 @@ void	error_cmd_not_found(char *cmd)
 	ft_putstr_fd(": command not found\n", 2);
 }
 
-
 int	check_slach(char *s, t_var *var)
 {
 	if (find_char(s, '/') == -1)
@@ -337,10 +333,9 @@ int	check_slach(char *s, t_var *var)
 	return (0);
 }
 
-
-void	exec_cmd(t_node *node,t_var *var)
+void	exec_cmd(t_node *node, t_var *var)
 {
-	char *path;
+	char	*path;
 
 	if (handle_rederction(node, var) < 0)
 	{

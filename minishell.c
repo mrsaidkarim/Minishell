@@ -30,7 +30,7 @@ int main(int ac, char **av, char **env)
         execution(root, &g_var);
         check_signel = 0;
         return_in_out_fd(&g_var);
-        freeTree(root);
+        free_tree(root);
     }
     rl_clear_history();
     return (0);

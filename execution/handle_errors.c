@@ -9,4 +9,3 @@ int	check_pipe(int tab[2])
 	}
 	return (1);
 }
-

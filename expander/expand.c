@@ -2,8 +2,8 @@
 
 int	size_list(t_list *head)
 {
-	int size;
-	t_list *tmp;
+	int		size;
+	t_list	*tmp;
 
 	size = 0;
 	tmp = head;
@@ -18,9 +18,9 @@ int	size_list(t_list *head)
 char	**ft_list_to_2d(t_list *head)
 {
 	t_list	*tmp;
-	char 	**tab;
-	int 	size;
-	int 	i;
+	char	**tab;
+	int		size;
+	int		i;
 
 	if (!head)
 		return (NULL);
@@ -96,7 +96,7 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 
 char	*ft_search_var(char *key, t_var *var)
 {
-	t_env *tmp;
+	t_env	*tmp;
 
 	tmp = var->env;
 	while (tmp)
@@ -135,10 +135,10 @@ int	is_white_space(char c)
 		return (1);
 	return (0);
 }
- 
+
 char	*ft_chartostr(char c)
 {
-	char str[2];
+	char	str[2];
 
 	str[0] = c;
 	str[1] = 0;
@@ -154,36 +154,36 @@ void	ft_print_lst(t_list *head)
 	}
 }
 
-
 void	ft_list_cwd(t_list **head)
 {
-	DIR *dir;
-    struct dirent *entry;
+	DIR				*dir;
+	struct dirent	*entry;
 
 	dir = opendir(".");
-	while ((entry = readdir(dir)) != NULL)
+	entry = readdir(dir);
+	while (entry)
 	{
-		if(entry->d_name[0] != '.')
+		if (entry->d_name[0] != '.')
 			ft_lstadd_back(head, ft_lstnew(ft_strdup(entry->d_name)));
-    }
+		entry = readdir(dir);
+	}
 	closedir(dir);
 	return ;
 }
 
 void	ft_init(t_exp *expand)
 {
-	expand->buffer1 = NULL;
-	expand->buffer2 = NULL;
+	expand->bf1 = NULL;
+	expand->bf2 = NULL;
 	expand->head = NULL;
 	expand->open = 0;
 	expand->i = 0;
 	expand->flag = 0;
 }
 
-
-int check_etoile(char *str)
+int	check_etoile(char *str)
 {
-	int i;
+	int	i;
 
 	if (!*str)
 		return (1);
@@ -194,26 +194,26 @@ int check_etoile(char *str)
 		return (0);
 	return (1);
 }
-/////////////////////////////////////////////
+
 void	ft_add(t_exp *exp)
 {
-	if (exp->buffer1)
+	if (exp->bf1)
 	{
-		if (!check_etoile(exp->buffer1) && !exp->flag)
+		if (!check_etoile(exp->bf1) && !exp->flag)
 		{
 			ft_list_cwd(&exp->head);
-			free(exp->buffer1);
+			free(exp->bf1);
 		}
 		else
 		{
-			if (!ft_strcmp("~", exp->buffer1))
+			if (!ft_strcmp("~", exp->bf1))
 			{
-				free(exp->buffer1);
-				exp->buffer1 = ft_strdup(getenv("HOME"));
+				free(exp->bf1);
+				exp->bf1 = ft_strdup(getenv("HOME"));
 			}
-			ft_lstadd_back(&exp->head, ft_lstnew(exp->buffer1));
+			ft_lstadd_back(&exp->head, ft_lstnew(exp->bf1));
 		}
-		exp->buffer1 = NULL;
+		exp->bf1 = NULL;
 		exp->flag = 0;
 	}
 }
@@ -227,50 +227,50 @@ void	ft_join(t_exp *exp, char *prompt)
 	}
 	else if (exp->open == prompt[exp->i])
 	{
-		if (!exp->buffer1 && (prompt[exp->i + 1] == ' ' || !prompt[exp->i + 1]))
-			exp->buffer1 = ft_strdup("");
+		if (!exp->bf1 && (prompt[exp->i + 1] == ' ' || !prompt[exp->i + 1]))
+			exp->bf1 = ft_strdup("");
 		exp->open = 0;
-		if (!exp->buffer1 || (prompt[exp->i] == prompt[exp->i - 1] && !check_etoile(exp->buffer1)))
+		if (!exp->bf1 || (prompt[exp->i] == prompt[exp->i - 1]
+				&& !check_etoile(exp->bf1)))
 			exp->flag = 0;
 	}
 	else
-		exp->buffer1 = ft_strjoin_2(exp->buffer1, ft_chartostr(prompt[exp->i]));
+		exp->bf1 = ft_strjoin_2(exp->bf1, ft_chartostr(prompt[exp->i]));
 }
 
-void	ft_dollar(t_exp *exp, char *prompt, t_var *var)
+void	ft_dollar(t_exp *exp, char *s, t_var *var)
 {
-	while (prompt[exp->i] && prompt[exp->i] == '$')
+	while (s[exp->i] && s[exp->i] == '$')
 	{
-		exp->buffer2 = ft_chartostr(prompt[exp->i]);
+		exp->bf2 = ft_chartostr(s[exp->i]);
 		exp->i++;
-		while (prompt[exp->i] && !is_del(prompt[exp->i]))
+		while (s[exp->i] && !is_del(s[exp->i]))
 		{
-			exp->buffer2 = ft_strjoin_2(exp->buffer2, ft_chartostr(prompt[exp->i]));
-			if (ft_isdigit(exp->buffer2[1]))
+			exp->bf2 = ft_strjoin_2(exp->bf2, ft_chartostr(s[exp->i]));
+			if (ft_isdigit(exp->bf2[1]))
 				break ;
 			exp->i++;
 		}
-		if (!ft_strcmp(exp->buffer2, "$") && prompt[exp->i] != '?')
-				exp->buffer1 = ft_strjoin_2(exp->buffer1, exp->buffer2);
+		if (!ft_strcmp(exp->bf2, "$") && s[exp->i] != '?')
+			exp->bf1 = ft_strjoin_2(exp->bf1, exp->bf2);
 		else
 		{
-			exp->buffer1 = ft_strjoin_2(exp->buffer1, ft_search_var(exp->buffer2 + 1, var));
-			free(exp->buffer2);
+			exp->bf1 = ft_strjoin_2(exp->bf1, ft_search_var(exp->bf2 + 1, var));
+			free(exp->bf2);
 		}
-		if (prompt[exp->i] == '?' && (prompt[exp->i + 1] == ' ' || !prompt[exp->i + 1]))
-			exp->buffer1 = ft_strjoin_2(exp->buffer1, ft_itoa(var->status));
-		else if (prompt[exp->i] && is_del(prompt[exp->i]) && prompt[exp->i] != '$' 
-			&& (prompt[exp->i + 1] != '\0' && prompt[exp->i + 1] != ' '))
-			exp->buffer1 = ft_strjoin_2(exp->buffer1, ft_chartostr(prompt[exp->i]));
-		exp->buffer2 = NULL;
+		if (s[exp->i] == '?' && (s[exp->i + 1] == ' ' || !s[exp->i + 1]))
+			exp->bf1 = ft_strjoin_2(exp->bf1, ft_itoa(var->status));
+		else if (s[exp->i] && is_del(s[exp->i]) && s[exp->i] != '$'
+			&& (s[exp->i + 1] != '\0' && s[exp->i + 1] != ' '))
+			exp->bf1 = ft_strjoin_2(exp->bf1, ft_chartostr(s[exp->i]));
+		exp->bf2 = NULL;
 	}
 }
-//////////////////////////////////////
 
 char	**ft_expand(char *prompt, t_var *var)
 {
 	t_exp	exp;
-	char 	**tab;
+	char	**tab;
 
 	ft_init(&exp);
 	tab = NULL;
@@ -283,9 +283,9 @@ char	**ft_expand(char *prompt, t_var *var)
 		else if (prompt[exp.i] == '$' && exp.open != '\'')
 			ft_dollar(&exp, prompt, var);
 		else
-			exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
+			exp.bf1 = ft_strjoin_2(exp.bf1, ft_chartostr(prompt[exp.i]));
 		if (!prompt[exp.i])
-			break;
+			break ;
 		exp.i++;
 	}
 	ft_add(&exp);
@@ -293,246 +293,3 @@ char	**ft_expand(char *prompt, t_var *var)
 	free_list(&exp.head);
 	return (tab);
 }
-
-/////////////////////////
-
-
-
-
-
-//////////////// new expand
-
-
-// char	**ft_expand(char *prompt, t_var *var)
-// {
-// 	t_exp exp;
-// 	char  **tab;
-
-// 	ft_init(&exp);
-// 	while (prompt[exp.i])
-// 	{
-// 		if ((is_white_space(prompt[exp.i])) && exp.open == 0)
-// 		{
-// 			if (exp.buffer1)
-// 			{
-// 				if (!check_etoile(exp.buffer1) && !exp.flag)
-// 					ft_list_cwd(&exp.head);
-// 				else
-// 				{
-// 					if (!ft_strcmp("~", exp.buffer1))
-// 					{
-// 						free(exp.buffer1);
-// 						exp.buffer1 = ft_strdup(getenv("HOME"));
-// 					}
-// 					ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
-// 				}
-// 				exp.buffer1 = NULL;
-// 				exp.flag = 0;
-// 			}
-// 		}
-// 		else if (prompt[exp.i] == '"' || prompt[exp.i] == '\'')
-// 		{
-// 			if (exp.open == 0)
-// 			{
-// 				exp.open = prompt[exp.i];
-// 				exp.flag = 1;
-// 			}
-// 			else if (exp.open == prompt[exp.i])
-// 			{
-// 				if (!exp.buffer1 && (prompt[exp.i + 1] == ' ' || !prompt[exp.i + 1]))
-// 					exp.buffer1 = ft_strdup("");
-// 				exp.open = 0;
-// 				if (!exp.buffer1 || (prompt[exp.i] == prompt[exp.i - 1] && !check_etoile(exp.buffer1)))
-// 					exp.flag = 0;
-// 			}
-// 			else
-// 				exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
-// 		}
-// 		else if (prompt[exp.i] == '$' && exp.open != '\'')
-// 		{
-// 			while (prompt[exp.i] && prompt[exp.i] == '$')
-// 			{
-// 				exp.buffer2 = ft_chartostr(prompt[exp.i]);
-// 				exp.i++;
-// 				while (prompt[exp.i] && !is_del(prompt[exp.i]))
-// 				{
-// 					exp.buffer2 = ft_strjoin_2(exp.buffer2, ft_chartostr(prompt[exp.i]));
-// 					if (ft_isdigit(exp.buffer2[1]))
-// 						break ;
-// 					exp.i++;
-// 				}
-// 				if (!ft_strcmp(exp.buffer2, "$") && prompt[exp.i] != '?')
-// 						exp.buffer1 = ft_strjoin_2(exp.buffer1, exp.buffer2);
-// 				else
-// 				{
-// 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_search_var(exp.buffer2 + 1, var));
-// 					free(exp.buffer2);
-// 				}
-// 				if (prompt[exp.i] == '?' && (prompt[exp.i + 1] == ' ' || !prompt[exp.i + 1]))
-// 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_itoa(var->status));
-// 				else if (prompt[exp.i] && is_del(prompt[exp.i]) && prompt[exp.i] != '$' && (prompt[exp.i + 1] != '\0' && prompt[exp.i + 1] != ' '))
-// 					exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
-// 				exp.buffer2 = NULL;
-// 			}
-// 		}
-// 		else
-// 			exp.buffer1 = ft_strjoin_2(exp.buffer1, ft_chartostr(prompt[exp.i]));
-// 		if (!prompt[exp.i])
-// 			break;
-// 		exp.i++;
-// 	}
-// 	if (exp.buffer1)
-// 	{
-// 		if (!check_etoile(exp.buffer1) && !exp.flag)
-// 			ft_list_cwd(&exp.head);
-// 		else
-// 		{
-// 			if (!ft_strcmp("~", exp.buffer1))
-// 			{
-// 				free(exp.buffer1);
-// 				exp.buffer1 = ft_strdup(getenv("HOME"));
-// 			}
-// 			ft_lstadd_back(&exp.head, ft_lstnew(exp.buffer1));
-// 		}
-// 		exp.buffer1 = NULL;
-// 		exp.flag = 0;
-// 	}
-// 	ft_print_lst(exp.head);
-// 	tab = ft_list_to_2d(exp.head);
-// 	free_list(&exp.head);
-// 	return (tab);
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
