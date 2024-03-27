@@ -70,7 +70,6 @@ typedef struct s_node
     int     index; // to remove
 }	t_node;
 
-
 ////////////////////////////////////////////////////////////////
 typedef struct s_var
 {
@@ -79,6 +78,7 @@ typedef struct s_var
     int     fd_input;
     int     fd_output;
     int     flag;
+	t_redir	*error_herdoc;
 }   t_var;
 
 typedef struct s_list
@@ -100,8 +100,8 @@ typedef struct s_exp
 
 typedef struct s_exp_herdoc
 {
-    char    *buffer1;
-    char    *buffer2;
+    char    *bf1;
+    char    *bf2;
     int     i;
 }   t_exp_herdoc;
 
@@ -174,6 +174,7 @@ pid_t	child_read(t_node *node, int tab[2], t_var *var);
 char	*get_path(char *cmd, t_var *var);
 char	**env_list_to_tab(t_env *env);
 int     check_slach(char *s, t_var *var);
+void	error_heredoc(t_redir *node);
 
 
 // update :
@@ -211,8 +212,8 @@ int     is_del(char c);
 void	ft_check_expand(char *s, bool *flag);
 
 //// handle errors in execution !
-int     check_pipe(int tab[2]);
-int     ft_heredoc(t_redir *node, t_var *var);
+int		check_pipe(int tab[2]);
+int		ft_heredoc(t_redir *node, t_var *var);
 void	handle_herdoc(t_node *root, t_var *var);
 void	errors_export(char *s);
 void	errors_unset(char *s);
@@ -220,17 +221,18 @@ void	error_cmd_not_found(char *cmd);
 void	error_execve(char *path, int error);
 ///////////////////////////////////////// signals;
 void	signal_midl_exec(void);
-int     update_status(int status);
+int		update_status(int status);
 void	ft_signal(void);
-t_node    *ft_build_tree1(void);
-void    ft_inorder_traversal(t_node *root);
+t_node	*ft_build_tree1(void);
+void	ft_inorder_traversal(t_node *root);
 // free allocated data
 void	ft_free_red(t_redir *reds);
 void	ft_free(t_node **head);
 void    free_tree(t_node *root);
 void	free_env(t_env *env);
 void	free_list(t_list **head);
-void	free_list(t_list **head);
-void	ft_print_lst(t_list *head);
-extern int check_signel;
+void	free_list_env(t_var *var);
+void	free_all(t_var *var);
+void	ft_print_lst(t_list *head); // to remove ;
+extern  int g_signel;
 #endif
