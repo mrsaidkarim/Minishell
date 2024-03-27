@@ -17,7 +17,7 @@ int	ft_print_syntax_error(char *msg, char *c, int count)
 		ft_putstr_fd("bash: syntax error ", 2);
 		ft_putstr_fd(msg, 2);
 		ft_putstr_fd(" `", 2);
-		while (++i < count && (c[i] == '&' || c[i] == '|' || c[i] == '>' || c[i] == '<'))
+		while (++i < count && (c[i] == '&' || c[i] == '|' || c[i] == '>' || c[i] == '<' || c[i] == ')'))
 			write(1, &c[i], 1);
 		ft_putstr_fd("'\n", 2);
 	}
