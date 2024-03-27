@@ -28,8 +28,15 @@ void	ft_env(t_var *var)
 	tmp = var->env;
 	while (tmp)
 	{
+		if ((!ft_strcmp(tmp->var, "PATH") && var->flag) 
+			|| find_char(tmp->env, '=') == -1)
+		{
+			tmp = tmp->next;
+			continue;
+		}
 		printf("%s\n", tmp->env);
 		tmp = tmp->next;
 	}
+	free_matrix(tab);
 	var->status = 0;
 }

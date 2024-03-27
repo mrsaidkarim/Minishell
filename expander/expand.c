@@ -197,22 +197,25 @@ int check_etoile(char *str)
 /////////////////////////////////////////////
 void	ft_add(t_exp *exp)
 {
-		if (exp->buffer1)
+	if (exp->buffer1)
+	{
+		if (!check_etoile(exp->buffer1) && !exp->flag)
 		{
-			if (!check_etoile(exp->buffer1) && !exp->flag)
-				ft_list_cwd(&exp->head);
-			else
-			{
-				if (!ft_strcmp("~", exp->buffer1))
-				{
-					free(exp->buffer1);
-					exp->buffer1 = ft_strdup(getenv("HOME"));
-				}
-				ft_lstadd_back(&exp->head, ft_lstnew(exp->buffer1));
-			}
-			exp->buffer1 = NULL;
-			exp->flag = 0;
+			ft_list_cwd(&exp->head);
+			free(exp->buffer1);
 		}
+		else
+		{
+			if (!ft_strcmp("~", exp->buffer1))
+			{
+				free(exp->buffer1);
+				exp->buffer1 = ft_strdup(getenv("HOME"));
+			}
+			ft_lstadd_back(&exp->head, ft_lstnew(exp->buffer1));
+		}
+		exp->buffer1 = NULL;
+		exp->flag = 0;
+	}
 }
 
 void	ft_join(t_exp *exp, char *prompt)
@@ -273,7 +276,7 @@ char	**ft_expand(char *prompt, t_var *var)
 	tab = NULL;
 	while (prompt[exp.i])
 	{
-		if (prompt[exp.i] == ' ' && exp.open == 0)
+		if ((is_white_space(prompt[exp.i])) && exp.open == 0)
 			ft_add(&exp);
 		else if (prompt[exp.i] == '"' || prompt[exp.i] == '\'')
 			ft_join(&exp, prompt);
