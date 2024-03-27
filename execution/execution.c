@@ -14,48 +14,6 @@ void	ft_or(t_node *root, t_var *var)
 		return (execution(root->rchild, var));
 }
 
-pid_t	child_write(t_node *node, int tab[2], t_var *var)
-{
-	pid_t	pid;
-
-	pid = fork();
-	if (pid < 0)
-	{
-		ft_putstr_fd("bash: faild to creat child\n", 2);
-		return (var->status = 1, -1);
-	}
-	if (pid == 0)
-	{
-		close(tab[0]);
-		dup2(tab[1], STDOUT_FILENO);
-		close(tab[1]);
-		execution(node, var);
-		exit(var->status);
-	}
-	return (pid);
-}
-
-pid_t	child_read(t_node *node, int tab[2], t_var *var)
-{
-	pid_t	pid;
-
-	pid = fork();
-	if (pid < 0)
-	{
-		ft_putstr_fd("bash: faild to creat child\n", 2);
-		return (var->status = 1, -1);
-	}
-	if (pid == 0)
-	{
-		close(tab[1]);
-		dup2(tab[0], STDIN_FILENO);
-		close(tab[0]);
-		execution(node, var);
-		exit(var->status);
-	}
-	return (pid);
-}
-
 void	ft_pipe(t_node *root, t_var *var)
 {
 	int		tab[2];
