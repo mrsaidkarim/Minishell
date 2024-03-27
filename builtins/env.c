@@ -23,9 +23,9 @@ void	ft_env(t_var *var)
 	tab = get_paths(var);
 	if (!tab || !check_path(tab))
 	{
-		printf("bash: env: is a directory\n");
-		if (tab)
-			free_matrix(tab);
+		ft_putstr_fd("bash: env: is a directory\n", 2);
+		free_matrix(tab);
+		var->status = 126;
 		return ;
 	}
 	tmp = var->env;
