@@ -29,6 +29,6 @@ void	error_heredoc(t_redir *node)
 		if (error_start_herdoc(node, tab))
 			break ;
 	}
+	close(tab[0]);
 	close(tab[1]);
-	closer(tab[2]);
 }
