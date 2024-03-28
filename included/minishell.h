@@ -79,6 +79,7 @@ typedef struct s_var
     int     fd_input;
     int     fd_output;
     int     flag;
+    t_redir *error_herdoc;
 }   t_var;
 
 typedef struct s_list
