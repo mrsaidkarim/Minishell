@@ -13,6 +13,7 @@ void	init_g_var(t_var *var)
 	var->fd_input = dup(STDIN_FILENO);
 	var->fd_output = dup(STDOUT_FILENO);
 	var->flag = 0;
+	var->error_herdoc = NULL;
 }
 
 int	find_char(char *env, char c)
