@@ -2,30 +2,33 @@
 
 int	g_signel = 0;
 
+void	ft_handle_error_herdoc(t_var *g_var)
+{
+	t_redir	*tmp;
+
+	if (g_var->error_herdoc)
+	{
+		tmp = g_var->error_herdoc;
+		while (tmp)
+		{
+			error_heredoc(tmp);
+			tmp = tmp->rchild;
+		}
+	}
+	g_signel = 0;
+	ft_free_red(g_var->error_herdoc);
+	g_var->error_herdoc = NULL;
+}
+
 void	start_handle(char *input, t_node *root, t_var *g_var)
 {
-	// t_redir	*tmp;
 	g_signel = 1;
 	add_history(input);
 	root = parsing(input, g_var);
 	if (!root)
-	{
-		// if (g_var->error_herdoc)
-		// {
-		// 	tmp = g_var->error_herdoc;
-		// 	while (tmp)
-		// 	{
-		// 		error_heredoc(tmp);
-		// 		tmp = tmp->rchild;
-		// 	}
-		// }
-		g_signel = 0;
-        ft_free_red(g_var.error_herdoc);
-        g_var.error_herdoc = NULL;
-		return ;
-	}
-    ft_free_red(g_var.error_herdoc);
-    g_var.error_herdoc = NULL;
+		return (ft_handle_error_herdoc(g_var));
+    ft_free_red(g_var->error_herdoc);
+    g_var->error_herdoc = NULL;
 	handle_herdoc(root, g_var);
 	execution(root, g_var);
 	g_signel = 0;
