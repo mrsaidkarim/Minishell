@@ -54,7 +54,7 @@ void	ft_update_env(t_var *var, char *pwd, char *oldpwd, char *tmp_pwd)
 			getcwd: cannot access parent directories");
 	}
 	free(pwd);
-	pwd = strdup(tmp_pwd);
+	pwd = ft_strdup(tmp_pwd);
 	if (ft_env_replace(ft_env_search(var->env, "PWD"), "PWD", pwd)
 		|| ft_oldpwd(var->env, oldpwd))
 		ft_putstr_fd("Error updating environment variables\n", 2);
@@ -70,13 +70,13 @@ void	ft_cd(t_var *var, char **cmd)
 
 	if (!cmd[1])
 	{
-		pwd = strdup(ft_get_envvar(*var, "HOME"));
+		pwd = ft_strdup(ft_get_envvar(*var, "HOME"));
 		if (!pwd)
 			return (var->status = 1,
-				ft_putstr_fd("HOME environment variable is not set", 2));
+				ft_putstr_fd("HOME environment variable is not set\n", 2));
 	}
 	else
-		pwd = strdup(cmd[1]);
+		pwd = ft_strdup(cmd[1]);
 	getcwd(oldpwd, PATH_MAX);
 	ft_update_env(var, pwd, oldpwd, tmp_pwd);
 }

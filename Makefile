@@ -38,15 +38,26 @@ SRCS = minishell.c \
 	   libft/ft_itoa.c \
 	   libft/ft_strjoin.c \
 	   expander/expand_herdoc.c \
-	   execution/handle_errors.c \
 	   expander/expand_file.c \
 	   builtins/export.c \
 	   libft/ft_isalphnum.c \
 	   libft/ft_atoll.c \
 	   builtins/cd.c \
 	   herdoc/handle_herdoc.c \
+	   herdoc/utils_herdoc.c \
 	   tree/tree.c\
 	  signals/signals.c\
+	  utils_builtins/utils_export.c \
+	  utils_builtins/utils_unset.c \
+	  errors/handle_errors.c \
+	  utils_execution/utils_pipe.c \
+	  rederctions/rederction.c \
+	  utils_execution/utils_exec_cmd.c \
+	  utils_expand/linked_list_expd.c \
+	  utils_expand/utils_expd.c \
+	  utils_expand/utils_help_expd.c \
+	  memory/free_list_env.c \
+	#herdoc/error_and_herdoc.c 
 
 OBJS = ${SRCS:.c=.o}
 

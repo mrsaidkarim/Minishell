@@ -1,8 +1,9 @@
 #include "../included/minishell.h"
 
+// check if there's the path that contain env 
 int	check_path(char **tab)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (tab[++i])
@@ -12,6 +13,8 @@ int	check_path(char **tab)
 	}
 	return (0);
 }
+
+// display all env that they have the content
 void	ft_env(t_var *var)
 {
 	t_env	*tmp;
@@ -20,19 +23,19 @@ void	ft_env(t_var *var)
 	tab = get_paths(var);
 	if (!tab || !check_path(tab))
 	{
-		printf("bash: env: is a directory\n");
-		if (tab)
-			free_matrix(tab);
+		ft_putstr_fd("bash: env: is a directory\n", 2);
+		free_matrix(tab);
+		var->status = 126;
 		return ;
 	}
 	tmp = var->env;
 	while (tmp)
 	{
-		if ((!ft_strcmp(tmp->var, "PATH") && var->flag) 
+		if ((!ft_strcmp(tmp->var, "PATH") && var->flag)
 			|| find_char(tmp->env, '=') == -1)
 		{
 			tmp = tmp->next;
-			continue;
+			continue ;
 		}
 		printf("%s\n", tmp->env);
 		tmp = tmp->next;

@@ -1,10 +1,10 @@
 #include "../included/minishell.h"
 
-
 //*WTERMSIG(status) *// return the signal number
-//*WIFEXITED(status)*// return true in case the processes exit using call system exit();
-//WIFSIGNALED is used to check if the proccess terminated with a signal;
-
+/*WIFEXITED(status)  return true in case the 
+processes exit using call system exit(); */
+/*WIFSIGNALED is used to check if the proccess 
+terminated with a signal;*/
 int	update_status(int status)
 {
 	if (WIFSIGNALED(status))
@@ -20,17 +20,16 @@ int	update_status(int status)
 	return (1);
 }
 
-void sigint_handler(int sig)
+void	sigint_handler(int sig)
 {
-    (void)sig;
-    if (!check_signel)
-    {
-        ft_putstr_fd("\n", STDOUT_FILENO);
-        rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
-        // check_signel = 1;
-    }
+	(void) sig;
+	if (!g_signel)
+	{
+		ft_putstr_fd("\n", STDOUT_FILENO);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
 }
 
 void	signal_midl_exec(void)
@@ -45,5 +44,5 @@ void	ft_signal(void)
 	rl_catch_signals = 0;
 	if (signal(SIGINT, sigint_handler) == SIG_ERR
 		|| signal(SIGQUIT, SIG_IGN) == SIG_ERR)
-		ft_putstr_fd("signale error\n", 2);
+		ft_putstr_fd("signal error\n", 2);
 }

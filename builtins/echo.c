@@ -1,5 +1,6 @@
 #include "../included/minishell.h"
 
+// this function check if there's the flag -n or no
 bool	option(char *str)
 {
 	if (!*str)
@@ -11,13 +12,15 @@ bool	option(char *str)
 			str++;
 	}
 	if (*str)
-			return (false);
+		return (false);
 	return (true);
 }
+
+// this function display the full line reprsenting by tab 2d
 void	ft_echo(char **cmd, t_var *var)
 {
 	int	opt;
-	int i;
+	int	i;
 
 	i = 0;
 	opt = 0;

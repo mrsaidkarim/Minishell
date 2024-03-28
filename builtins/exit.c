@@ -1,6 +1,6 @@
 #include "../included/minishell.h"
 
-
+/* display the error if there's to many or non numeric arguments*/
 void	errors_exit(char *str, int c)
 {
 	ft_putstr_fd("exit\n", 2);
@@ -13,11 +13,13 @@ void	errors_exit(char *str, int c)
 		ft_putstr_fd(": numeric argument required\n", 2);
 	}
 }
+
+// check  argument by argument if is digit 
 int	is_digit(char **cmd)
 {
 	int	i;
-	int j;
-	int check;
+	int	j;
+	int	check;
 
 	check = 0;
 	i = 0;
@@ -39,9 +41,10 @@ int	is_digit(char **cmd)
 	return (1);
 }
 
+// calculate the nombre of argument
 int	nbr_arg(char **av)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (*av)
@@ -52,9 +55,10 @@ int	nbr_arg(char **av)
 	return (i);
 }
 
-void	handle_d_arg(t_var *var,char **cmd)
+// is used to minimizing function ft_exit
+void	handle_d_arg(t_var *var, char **cmd)
 {
-	int nbr;
+	int	nbr;
 
 	nbr = nbr_arg(cmd);
 	if (nbr == 1)
@@ -77,7 +81,8 @@ void	handle_d_arg(t_var *var,char **cmd)
 	}
 }
 
-void	ft_exit(t_var *var,char **cmd)
+// exit function 
+void	ft_exit(t_var *var, char **cmd)
 {
 	handle_d_arg(var, cmd);
 }

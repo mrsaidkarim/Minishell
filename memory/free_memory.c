@@ -2,7 +2,7 @@
 
 void	free_matrix(char **tab)
 {
-	int i;
+	int	i;
 
 	if (!tab)
 		return ;
@@ -48,7 +48,7 @@ void	ft_free(t_node **head)
 }
 
 // free the tree that contain the commands.
-void	freeTree(t_node *root)
+void	free_tree(t_node *root)
 {
 	t_node	*tmp;
 
@@ -59,9 +59,18 @@ void	freeTree(t_node *root)
 			free(root->pre_cmd);
 		if (root->cmd)
 			free_matrix(root->cmd);
-        tmp = root;
-		freeTree(root->lchild);
-		freeTree(root->rchild);
+		tmp = root;
+		free_tree(root->lchild);
+		free_tree(root->rchild);
 		free(tmp);
 	}
+}
+
+// free all data
+void	free_all(t_var *var)
+{
+	free_list_env(var);
+	rl_clear_history();
+	close(var->fd_input);
+	close(var->fd_output);
 }

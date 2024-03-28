@@ -70,7 +70,6 @@ typedef struct s_node
     int     index; // to remove
 }	t_node;
 
-
 ////////////////////////////////////////////////////////////////
 typedef struct s_var
 {
@@ -91,8 +90,8 @@ typedef struct s_list
 
 typedef struct s_exp
 {
-    char    *buffer1;
-    char    *buffer2;
+    char    *bf1;
+    char    *bf2;
     int     open;
     int     i;
     t_list  *head;
@@ -101,26 +100,18 @@ typedef struct s_exp
 
 typedef struct s_exp_herdoc
 {
-    char    *buffer1;
-    char    *buffer2;
+    char    *bf1;
+    char    *bf2;
     int     i;
 }   t_exp_herdoc;
 
 ///////////////////////////////////////////////////////////////
-// int		ft_strcmp(const char *s1, const char *s2);
-// char	**ft_split(char const *str, char c);
-// void	ft_putstr_fd(char *s, int fd);
-// void	ft_echo(char **cmd);
-// char	*ft_strjoin(char *s1, char *s2);
-// void	ft_pwd(void);
-// char	*ft_strdup(const char *s1);
-
 int	    ft_isalnum(int c);
 int	    ft_isdigit(int c);
 char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 size_t	ft_strlen(const char *s);
-char	*ft_strcpy(char *dest, const char *src);
+// char	*ft_strcpy(char *dest, const char *src);
 void	ft_putstr_fd(char *s, int fd);
 int	    ft_print_syntax_error(char *msg, char *c, int count);
 char    *ft_clean_input(char *str);
@@ -144,7 +135,6 @@ t_node	*ft_infix_postfix(t_node **head);
 t_node	*ft_infix_postfix(t_node **head);
 void	ft_build_tree(t_node *head);
 
-
 // function for exec;
 int		ft_strcmp(const char *s1, const char *s2);
 void	initialization(t_var *var,char **env);
@@ -155,14 +145,8 @@ size_t	ft_strlen(const char *s);
 void	ft_pwd(t_var *var);
 size_t	ft_strlen(const char *s);
 void	ft_cd(t_var *var, char **cmd);
-// char	*parsing(char *input);
-// char	*function_one_space(char *str);
-// char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_strdup(const char *s1);
 void	allocate_error(char *str);
-// char	*ft_substr(char const *s, unsigned int start, size_t len);
-// t_node	*ft_create_cmd(char *str, size_t len, t_token tok);
-// void	ft_add_back(t_node **head, t_node *new);
 t_env	*ft_creat_env(char *env, char *var, char *content);
 void	ft_add_env(t_env **head, t_env *new);
 void	ft_env(t_var *var);
@@ -177,14 +161,44 @@ char	*ft_strjoin(char const *s1, char const *s2);
 void	return_in_out_fd(t_var *var);
 void	ft_unset(t_var *var, char **cmd);
 char	*ft_itoa(int n);
-
-
 void	ft_export(t_var *var, char **cmd);
+t_env	*copy(t_var *var);
+void	displaye_env(t_var *var);
+void	ft_switch(t_env *trav, t_env *env);
+void	sort_env(t_env *env);
+int	    is_valid(char c, int fisrt);
+int	    check_var(char *str);
+void	delete_node(t_var *var, t_env *node, int check);
+pid_t	child_write(t_node *node, int tab[2], t_var *var);
+pid_t	child_read(t_node *node, int tab[2], t_var *var);
+char	*get_path(char *cmd, t_var *var);
+char	**env_list_to_tab(t_env *env);
+int     check_slach(char *s, t_var *var);
+void	error_heredoc(t_redir *node);
+
+
+// update :
+// redirection :
+int     handle_rederction(t_node *node, t_var *var);
 // expand;
 char	*ft_search_var(char *key, t_var *var);
 char	*expand_herdoc(char *str, t_var *var);
 char	*ft_strjoin_2(char *s1, char *s2);
 char    *expand_file(char *file);
+bool	start_herdoc(t_redir *node, t_var *var, int tab[2]);
+int	    ft_heredoc(t_redir *node, t_var *var);
+void	ft_init(t_exp *expand);
+int	    is_del(char c);
+int	    is_white_space(char c);
+char	*ft_chartostr(char c);
+int	    check_etoile(char *str);
+t_list	*ft_lstnew(void *content);
+void	ft_lstadd_back(t_list **lst, t_list *new);
+int	    size_list_exp(t_list *head);
+char	**ft_list_to_2d(t_list *head);
+char	*ft_search_var(char *key, t_var *var);
+void	ft_list_cwd(t_list **head);
+char	*ft_strjoin_2(char *s1, char *s2);
 // t_list *ft_expand(char *promt, t_var *var);
 char    **ft_expand(char *promt, t_var *var);
 char	*ft_chartostr(char c);
@@ -196,29 +210,29 @@ int     ft_isdigit(int c);
 long long	ft_atoll(const char *str, int *i);
 int     is_del(char c);
 void	ft_check_expand(char *s, bool *flag);
-// void	ft_echo2(t_list *head, t_var *var);
 
 //// handle errors in execution !
-int	check_pipe(int tab[2]);
-int	ft_heredoc(t_redir *node, t_var *var);
+int		check_pipe(int tab[2]);
+int		ft_heredoc(t_redir *node, t_var *var);
 void	handle_herdoc(t_node *root, t_var *var);
+void	errors_export(char *s);
+void	errors_unset(char *s);
+void	error_cmd_not_found(char *cmd);
+void	error_execve(char *path, int error);
 ///////////////////////////////////////// signals;
 void	signal_midl_exec(void);
-int     update_status(int status);
+int		update_status(int status);
 void	ft_signal(void);
-
-
-
-
-t_node    *ft_build_tree1(void);
-void    ft_inorder_traversal(t_node *root);
-
-extern int check_signel;
-
-
+t_node	*ft_build_tree1(void);
+void	ft_inorder_traversal(t_node *root);
 // free allocated data
 void	ft_free_red(t_redir *reds);
 void	ft_free(t_node **head);
-void    freeTree(t_node *root);
-
+void    free_tree(t_node *root);
+void	free_env(t_env *env);
+void	free_list(t_list **head);
+void	free_list_env(t_var *var);
+void	free_all(t_var *var);
+void	ft_print_lst(t_list *head); // to remove ;
+extern  int g_signel;
 #endif
