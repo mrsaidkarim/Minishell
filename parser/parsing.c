@@ -56,8 +56,33 @@ t_redir	*ft_create_red(char *line, int *i, t_token tok)
 	return (ft_create_rednode(file_name, tok));
 }
 
+// creation of the herdoc redirection linked list
+void	ft_heredoc_syntax(t_redir *red, t_var *var)
+{
+	t_redir *tmp_red;
+	t_redir	*tmp_herdoc;
+
+	tmp_red = red;
+	while (tmp_red)
+	{
+		if (tmp_red->tok == HEREDOC)
+		{
+			if (var->error_herdoc == NULL)
+				var->error_herdoc = ft_create_rednode(ft_strdup(tmp_red->file), HEREDOC);
+			else
+			{
+				tmp_herdoc = var->error_herdoc;
+				while (tmp_herdoc->rchild)
+					tmp_herdoc = tmp_herdoc->rchild;
+				tmp_herdoc->rchild = ft_create_rednode(ft_strdup(tmp_red->file), HEREDOC);
+			}
+		}
+		tmp_red = tmp_red->rchild;
+	}
+}
+
 // prepare the node command and add it to the linked list
-int	ft_prepare_cmd(char *line, int *i, t_node **head)
+int	ft_prepare_cmd(char *line, int *i, t_node **head, t_var *var)
 {
 	int		j;
 	char	*cmd;
@@ -71,17 +96,17 @@ int	ft_prepare_cmd(char *line, int *i, t_node **head)
 		{
 			if (ft_add_red(&red, ft_create_red(line, i,
 						check_tok(line + (*i)))) == -1)
-				return (ft_free_red(red), -1);
+				return (ft_heredoc_syntax(red, var), ft_free_red(red), -1);
 		}
 		else
 			(*i)++;
 	}
 	cmd = ft_wordred(line, j, '\0');
 	if (!cmd)
-		return (ft_free_red(red), -1);
+		return (ft_heredoc_syntax(red, var), ft_free_red(red), -1);
 	if (ft_add_back(head, ft_create_cmd(cmd, ft_strlen(cmd), EXPR, red)) == -1)
 		return (-1);
-	return (1);
+	return (ft_heredoc_syntax(red, var), 1);
 }
 
 // Tokenizes the input line and builds a linked list of commands with associated tokens and redirections.
@@ -107,7 +132,7 @@ int	ft_build_cmds(char *line, t_node **head, t_var *var)
 		else if (ft_check_delim(line, i) == -1)
 			return (ft_print_syntax_error("near unexpected token", "&", 1), var->status = 258, ft_free(head), -1);
 		else
-			if (ft_prepare_cmd(line, &i, head) == -1)
+			if (ft_prepare_cmd(line, &i, head, var) == -1)
 				return (var->status = 258, ft_free(head), -1);
 	}
 	return (0);
