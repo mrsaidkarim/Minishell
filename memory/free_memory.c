@@ -24,6 +24,7 @@ void	ft_free_red(t_redir *reds)
 		tmp = reds;
 		reds = reds->rchild;
 		free(tmp);
+		tmp = NULL;
 	}
 }
 
