@@ -17,6 +17,7 @@ bool	error_start_herdoc(t_redir *node, int tab[2])
 	free(input);
 	return (false);
 }
+
 void	error_heredoc(t_redir *node)
 {
 	int		tab[2];

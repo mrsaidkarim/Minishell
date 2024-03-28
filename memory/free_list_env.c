@@ -11,8 +11,8 @@ void	free_node(t_env *node)
 
 void	free_list_env(t_var *var)
 {
-	t_env *head;
-	t_env *tmp;
+	t_env	*head;
+	t_env	*tmp;
 
 	head = var->env;
 	while (head)

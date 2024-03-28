@@ -2,7 +2,7 @@
 
 void	push_to_stack(t_node **head_src, t_node **head_dst)
 {
-	t_node *node;
+	t_node	*node;
 	t_node	*tmp;
 
 	if (!head_src || !(*head_src))
@@ -26,7 +26,7 @@ void	push_to_stack(t_node **head_src, t_node **head_dst)
 
 void	push_to_tok_stack(t_node **head_src, t_node **head_dst)
 {
-	t_node *node;
+	t_node	*node;
 
 	if (!head_src || !(*head_src))
 		return ;
@@ -47,10 +47,10 @@ void	push_to_tok_stack(t_node **head_src, t_node **head_dst)
 
 void	remove_node(t_node **head_src)
 {
-	t_node *tmp;
+	t_node	*tmp;
 
 	if (!(*head_src))
-		return;
+		return ;
 	if (!(*head_src)->rchild)
 	{
 		free(*head_src);
@@ -65,37 +65,43 @@ void	remove_node(t_node **head_src)
 	}
 }
 
-t_node	*ft_infix_postfix(t_node **head)
+void	start_algo(t_node **head, t_node **stack_tok, t_node **new_stack)
 {
-	t_node *stack_tok;
-	t_node *new_stack;
-
-	stack_tok = NULL;
-	new_stack = NULL;
 	while (*head)
 	{
 		if ((*head)->tok == EXPR)
-			push_to_stack(head, &new_stack);
+			push_to_stack(head, new_stack);
 		else if ((*head)->tok != BRKT_OPEN && (*head)->tok != BRKT_CLOSE)
 		{
-			while (stack_tok && stack_tok->precedence >= (*head)->precedence)
+			while (*stack_tok
+				&& (*stack_tok)->precedence >= (*head)->precedence)
 			{
-				push_to_stack(&stack_tok, &new_stack);
+				push_to_stack(stack_tok, new_stack);
 			}
-			push_to_tok_stack(head, &stack_tok);
+			push_to_tok_stack(head, stack_tok);
 		}
 		else if ((*head)->tok == BRKT_OPEN)
-			push_to_tok_stack(head, &stack_tok);
+			push_to_tok_stack(head, stack_tok);
 		else if ((*head)->tok == BRKT_CLOSE)
 		{
 			remove_node(head);
-			while (stack_tok->tok != BRKT_OPEN)
+			while ((*stack_tok)->tok != BRKT_OPEN)
 			{
-				push_to_stack(&stack_tok, &new_stack);
+				push_to_stack(stack_tok, new_stack);
 			}
-			remove_node(&stack_tok);
+			remove_node(stack_tok);
 		}
 	}
+}
+
+t_node	*ft_infix_postfix(t_node **head)
+{
+	t_node	*stack_tok;
+	t_node	*new_stack;
+
+	stack_tok = NULL;
+	new_stack = NULL;
+	start_algo(head, &stack_tok, &new_stack);
 	while (stack_tok)
 		push_to_stack(&stack_tok, &new_stack);
 	return (new_stack);

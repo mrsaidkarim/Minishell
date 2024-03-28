@@ -27,8 +27,8 @@ void	start_handle(char *input, t_node *root, t_var *g_var)
 	root = parsing(input, g_var);
 	if (!root)
 		return (ft_handle_error_herdoc(g_var));
-    ft_free_red(g_var->error_herdoc);
-    g_var->error_herdoc = NULL;
+	ft_free_red(g_var->error_herdoc);
+	g_var->error_herdoc = NULL;
 	handle_herdoc(root, g_var);
 	execution(root, g_var);
 	g_signel = 0;
