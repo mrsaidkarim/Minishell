@@ -25,10 +25,11 @@ t_node	*ft_tree(t_node *head)
 	return (head);
 }
 
-// Builds a binary tree from a postfix expression represented as a double-linked list.
+/* Builds a binary tree from a postfix expression
+represented as a double-linked list.*/
 void	ft_build_tree(t_node *head)
 {
-	while(head->rchild)
+	while (head->rchild)
 		head = head->rchild;
 	ft_tree(head);
 }
