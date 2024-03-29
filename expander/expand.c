@@ -1,6 +1,6 @@
 #include "../included/minishell.h"
 
-void	ft_add(t_exp *exp)
+void	ft_add(t_exp *exp, t_var *var)
 {
 	if (exp->bf1)
 	{
@@ -14,7 +14,7 @@ void	ft_add(t_exp *exp)
 			if (!ft_strcmp("~", exp->bf1))
 			{
 				free(exp->bf1);
-				exp->bf1 = ft_strdup(getenv("HOME"));
+				exp->bf1 = ft_search_var("HOME", var);
 			}
 			ft_lstadd_back(&exp->head, ft_lstnew(exp->bf1));
 		}
@@ -82,7 +82,7 @@ char	**ft_expand(char *prompt, t_var *var)
 	while (prompt[exp.i])
 	{
 		if ((is_white_space(prompt[exp.i])) && exp.open == 0)
-			ft_add(&exp);
+			ft_add(&exp, var);
 		else if (prompt[exp.i] == '"' || prompt[exp.i] == '\'')
 			ft_join_char(&exp, prompt);
 		else if (prompt[exp.i] == '$' && exp.open != '\'')
@@ -93,7 +93,7 @@ char	**ft_expand(char *prompt, t_var *var)
 			break ;
 		exp.i++;
 	}
-	ft_add(&exp);
+	ft_add(&exp, var);
 	tab = ft_list_to_2d(exp.head);
 	free_list(&exp.head);
 	return (tab);
