@@ -72,10 +72,32 @@ void	chdild_exec_2(char *path, char **cmd, t_var *var)
 	free_matrix(env);
 }
 
-void	exec_cmd(t_node *node, t_var *var)
+void	help_exec_cmd(t_node *node, t_var *var)
 {
 	char	*path;
 
+	path = get_path(node->cmd[0], var);
+	if (!path)
+	{
+		printf("here\n");
+		if (!check_slach(node->cmd[0], var))
+			chdild_exec_2(node->cmd[0], node->cmd, var);
+	}
+	else if (path && node->cmd[0][0])
+	{
+		chdild_exec(path, node->cmd, var);
+		free(path);
+	}
+	else
+	{
+		error_cmd_not_found(node->cmd[0]);
+		var->status = 127;
+		free(path);
+	}
+}
+
+void	exec_cmd(t_node *node, t_var *var)
+{
 	if (handle_rederction(node, var) < 0)
 	{
 		return_in_out_fd(var);
@@ -83,18 +105,6 @@ void	exec_cmd(t_node *node, t_var *var)
 	}
 	node->cmd = ft_expand(node->pre_cmd, var);
 	if (node->cmd && node->cmd[0] && !is_builting(node->cmd, var))
-	{
-		path = get_path(node->cmd[0], var);
-		if (!path)
-		{
-			if (!check_slach(node->cmd[0], var))
-				chdild_exec_2(node->cmd[0], node->cmd, var);
-		}
-		else
-		{
-			chdild_exec(path, node->cmd, var);
-			free(path);
-		}
-	}
+		help_exec_cmd(node, var);
 	return_in_out_fd(var);
 }
