@@ -21,6 +21,8 @@ void	ft_free_red(t_redir *reds)
 	{
 		if (reds->file)
 			free(reds->file);
+		if (reds->s_fd != -1)
+			close(reds->s_fd);
 		tmp = reds;
 		reds = reds->rchild;
 		free(tmp);
