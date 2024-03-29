@@ -18,12 +18,15 @@ bool	error_start_herdoc(t_redir *node, int tab[2])
 	return (false);
 }
 
-void	error_heredoc(t_redir *node)
+void	error_heredoc(t_redir *node, t_var *g_var)
 {
 	int		tab[2];
 
 	if (!check_pipe(tab))
+	{
+		g_var->status = 1;
 		return ;
+	}
 	node->file = expand_file(node->file);
 	while (1)
 	{

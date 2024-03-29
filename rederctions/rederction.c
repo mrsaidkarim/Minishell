@@ -38,7 +38,7 @@ int	handle_fd_in(t_node *node)
 		{
 			if (fd_in)
 				close(fd_in);
-			fd_in = tmp->fd;
+			(1 && 1) && (fd_in = tmp->fd, tmp->s_fd = -1);
 		}
 		if (fd_in < 0)
 			return (-1);

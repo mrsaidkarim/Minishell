@@ -108,8 +108,9 @@ void	ft_export(t_var *var, char **cmd)
 			var_env = ft_substr(*cmd, 0, i);
 			if (is_existe(var->env, var_env, *cmd, i))
 			{
+				if (!ft_strcmp(var_env, "PATH"))
+					var->flag = 0;
 				free(var_env);
-				var->flag = 0;
 			}
 			else
 				add_var_to_list(var->env, var_env, *cmd, i);

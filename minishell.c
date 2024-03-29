@@ -11,7 +11,7 @@ void	ft_handle_error_herdoc(t_var *g_var)
 		tmp = g_var->error_herdoc;
 		while (tmp)
 		{
-			error_heredoc(tmp);
+			error_heredoc(tmp, g_var);
 			tmp = tmp->rchild;
 		}
 	}
@@ -23,7 +23,8 @@ void	ft_handle_error_herdoc(t_var *g_var)
 void	start_handle(char *input, t_node *root, t_var *g_var)
 {
 	g_signel = 1;
-	add_history(input);
+	if (input[0])
+		add_history(input);
 	root = parsing(input, g_var);
 	if (!root)
 		return (ft_handle_error_herdoc(g_var));
