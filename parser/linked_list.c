@@ -51,6 +51,7 @@ t_redir	*ft_create_rednode(char *file_name, t_token tok)
 		return (NULL);
 	rednode->file = file_name;
 	rednode->tok = tok;
+	rednode->s_fd = -1;
 	rednode->lchild = NULL;
 	rednode->rchild = NULL;
 	return (rednode);
