@@ -86,7 +86,7 @@ char	*ft_strjoin_2(char *s1, char *s2)
 		return (s1);
 	ptr = (char *)malloc(((ft_strlen(s1) + ft_strlen(s2)) + 1) * sizeof(char));
 	if (!ptr)
-		return (NULL);
+		allocate_error(strerror(errno));
 	while (s1[i])
 		(1) && (ptr[i] = s1[i], i++);
 	while (s2[j])

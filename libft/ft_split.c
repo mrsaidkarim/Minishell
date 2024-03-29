@@ -64,7 +64,9 @@ static void	*ft_free_all_split_alloc(char **split, size_t elts)
 		i++;
 	}
 	free(split);
-	return (NULL);
+	ft_putstr_fd("bash : malloc: ", 2);
+	ft_putstr_fd("faild to allocate memory\n", 2);
+	exit(1);
 }
 
 char	**ft_split(char const *str, char c)
@@ -76,7 +78,7 @@ char	**ft_split(char const *str, char c)
 		return (NULL);
 	strings = (char **)malloc(sizeof(char *) * (count_strings(str, c) + 1));
 	if (!strings)
-		return (NULL);
+		allocate_error(strerror(errno));
 	i = 0;
 	while (*str)
 	{

@@ -8,6 +8,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <signal.h>
+# include <string.h>
 # include <stdbool.h>
 # include <sys/wait.h>
 # include <errno.h>
@@ -60,7 +61,6 @@ typedef struct s_node
 	t_redir			*redirections;
 	t_node			*rchild;
 	t_node			*lchild;
-	int				index; // to remove
 }	t_node;
 
 typedef struct s_var
@@ -96,16 +96,11 @@ typedef struct s_exp_herdoc
 	int		i;
 }	t_exp_herdoc;
 
-int			ft_isalnum(int c);
-int			ft_isdigit(int c);
 char		*ft_strtrim(char const *s1, char const *set);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
-size_t		ft_strlen(const char *s);
-void		ft_putstr_fd(char *s, int fd);
 int			ft_print_syntax_error(char *msg, char *c, int count);
 char		*ft_clean_input(char *str);
 int			ft_first_check(char *str);
-void		allocate_error(char *str);
 t_token		check_tok(char *str);
 int			ft_check_delim(char *str, int i);
 int			ft_isspace(char c);
@@ -122,7 +117,6 @@ t_node		*ft_create_cmd(char *str, int len, t_token tok, t_redir *redlist);
 int			ft_add_back(t_node **head, t_node *new);
 t_node		*parsing(char *input, t_var *var);
 t_node		*ft_infix_postfix(t_node **head);
-t_node		*ft_infix_postfix(t_node **head);
 void		ft_build_tree(t_node *head);
 void		ft_heredoc_syntax(t_redir *red, t_var *var);
 int			check_parentheses_error(char *line, t_var *var, t_redir *red);
@@ -132,7 +126,6 @@ void		initialization(t_var *var, char **env);
 char		**ft_split(char const *str, char c);
 void		ft_putstr_fd(char *s, int fd);
 void		ft_echo(char **cmd, t_var *var);
-size_t		ft_strlen(const char *s);
 void		ft_pwd(t_var *var);
 size_t		ft_strlen(const char *s);
 void		ft_cd(t_var *var, char **cmd);
@@ -157,7 +150,6 @@ t_env		*copy(t_var *var);
 void		displaye_env(t_var *var);
 void		ft_switch(t_env *trav, t_env *env);
 void		sort_env(t_env *env);
-int			is_valid(char c, int fisrt);
 int			check_var(char *str);
 void		delete_node(t_var *var, t_env *node, int check);
 pid_t		child_write(t_node *node, int tab[2], t_var *var);
@@ -169,16 +161,12 @@ void		error_heredoc(t_redir *node, t_var *var);
 // redirection :
 int			handle_rederction(t_node *node, t_var *var);
 // expand;
-char		*ft_search_var(char *key, t_var *var);
 char		*expand_herdoc(char *str, t_var *var);
-char		*ft_strjoin_2(char *s1, char *s2);
 char		*expand_file(char *file);
 bool		start_herdoc(t_redir *node, t_var *var, int tab[2]);
-int			ft_heredoc(t_redir *node, t_var *var);
 void		ft_init(t_exp *expand);
 int			is_del(char c);
 int			is_white_space(char c);
-char		*ft_chartostr(char c);
 int			check_etoile(char *str);
 t_list		*ft_lstnew(void *content);
 void		ft_lstadd_back(t_list **lst, t_list *new);
@@ -195,7 +183,6 @@ char		**get_paths(t_var *var);
 int			ft_isalnum(int c);
 int			ft_isdigit(int c);
 long long	ft_atoll(const char *str, int *i);
-int			is_del(char c);
 void		ft_check_expand(char *s, bool *flag);
 //// handle errors in execution !
 int			check_pipe(int tab[2]);
@@ -209,8 +196,6 @@ void		error_execve(char *path, int error);
 void		signal_midl_exec(void);
 int			update_status(int status);
 void		ft_signal(void);
-t_node		*ft_build_tree1(void);
-void		ft_inorder_traversal(t_node *root);
 // free allocated data
 void		ft_free_red(t_redir *reds);
 void		ft_free(t_node **head);
@@ -219,7 +204,6 @@ void		free_env(t_env *env);
 void		free_list(t_list **head);
 void		free_list_env(t_var *var);
 void		free_all(t_var *var);
-void		ft_print_lst(t_list *head); // to remove ;
 
 extern int				g_signel;
 #endif

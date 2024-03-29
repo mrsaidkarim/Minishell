@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=address -g
 HEADER = included/minishell.h
 RM = rm -rf 
 
@@ -45,7 +45,6 @@ SRCS = minishell.c \
 	   builtins/cd.c \
 	   herdoc/handle_herdoc.c \
 	   herdoc/utils_herdoc.c \
-	   tree/tree.c\
 	  signals/signals.c\
 	  utils_builtins/utils_export.c \
 	  utils_builtins/utils_unset.c \
@@ -64,10 +63,10 @@ OBJS = ${SRCS:.c=.o}
 all : ${NAME}
 
 %.o : %.c ${HEADER}
-	${CC} ${CFLAGS} -I ${READLINE_I} -c $< -o $@
+	${CC} ${CFLAG} -I ${READLINE_I} -c $< -o $@
 
 ${NAME} : ${OBJS}
-	${CC} ${CFLAGS} ${OBJS} -o ${NAME} -L ${READLINE_L} -lreadline
+	${CC} ${CFLAG} ${OBJS} -o ${NAME} -L ${READLINE_L} -lreadline
 
 clean :
 	${RM} ${OBJS}

@@ -23,7 +23,7 @@ char	*ft_itoa(int n)
 	d_count = ft_count(n) + sign;
 	str = (char *)malloc((d_count + 1) * sizeof(char));
 	if (!str)
-		return (NULL);
+		allocate_error(strerror(errno));
 	str[d_count] = 0;
 	if (sign)
 	{

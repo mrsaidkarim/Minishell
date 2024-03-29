@@ -9,7 +9,7 @@ char	*ft_strdup(const char *s1)
 		return (NULL);
 	ptr = (char *)malloc((ft_strlen(s1) + 1) * sizeof(char));
 	if (!ptr)
-		return (NULL);
+		allocate_error(strerror(errno));
 	i = -1;
 	while (s1[++i])
 		ptr[i] = s1[i];

@@ -19,7 +19,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		size = len;
 	res = malloc(size + 1);
 	if (!res)
-		return (NULL);
+		allocate_error(strerror(errno));
 	while (i < size)
 	{
 		res[i] = s[start + i];
