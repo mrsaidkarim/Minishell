@@ -56,11 +56,11 @@ int	handle_fd_out(t_node *node)
 	fd_out = 0;
 	while (tmp)
 	{
+		tmp->file = expand_file(tmp->file);
 		if (tmp->tok == REDIR_OUT)
 		{
 			if (fd_out)
 				close(fd_out);
-			tmp->file = expand_file(tmp->file);
 			fd_out = open_file(tmp->file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		}
 		else if (tmp->tok == REDIR_APPEND)
