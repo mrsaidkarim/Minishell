@@ -45,6 +45,7 @@ typedef struct s_redir
 	char			*file;
 	bool			flg;
 	int				fd;
+	int				s_fd;
 	struct s_redir	*lchild;
 	struct s_redir	*rchild;
 }	t_redir;
@@ -162,7 +163,7 @@ pid_t		child_read(t_node *node, int tab[2], t_var *var);
 char		*get_path(char *cmd, t_var *var);
 char		**env_list_to_tab(t_env *env);
 int			check_slach(char *s, t_var *var);
-void		error_heredoc(t_redir *node);
+void		error_heredoc(t_redir *node, t_var *var);
 // redirection :
 int			handle_rederction(t_node *node, t_var *var);
 // expand;
