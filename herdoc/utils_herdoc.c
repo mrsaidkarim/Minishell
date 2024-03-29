@@ -45,5 +45,5 @@ int	ft_heredoc(t_redir *node, t_var *var)
 		dup2(save_fd, STDOUT_FILENO);
 		close(save_fd);
 	}
-	return (close(tab[1]), tab[0]);
+	return (close(tab[1]), node->s_fd = tab[0], tab[0]);
 }
