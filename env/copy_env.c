@@ -60,7 +60,8 @@ void	ft_main_env(t_var *var)
 
 void	initialization(t_var *var, char **env)
 {
-	int	i;
+	int		i;
+	char	*tmp;
 
 	init_g_var(var);
 	if (!env || !(*env))
@@ -76,4 +77,12 @@ void	initialization(t_var *var, char **env)
 				ft_strdup(*env + i + 1)));
 		env++;
 	}
+	tmp = ft_search_var("OLDPWD", var);
+	if (!tmp)
+	{
+		ft_add_env(&var->env, ft_creat_env("OLDPWD",
+				ft_strdup("OLDPWD"), ft_strdup("")));
+	}
+	else
+		free(tmp);
 }
