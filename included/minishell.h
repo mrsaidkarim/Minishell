@@ -124,6 +124,8 @@ t_node		*parsing(char *input, t_var *var);
 t_node		*ft_infix_postfix(t_node **head);
 t_node		*ft_infix_postfix(t_node **head);
 void		ft_build_tree(t_node *head);
+void		ft_heredoc_syntax(t_redir *red, t_var *var);
+int			check_parentheses_error(char *line, t_var *var, t_redir *red);
 // function for exec;
 int			ft_strcmp(const char *s1, const char *s2);
 void		initialization(t_var *var, char **env);

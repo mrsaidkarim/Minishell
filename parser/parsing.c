@@ -118,8 +118,6 @@ t_node	*parsing(char *input, t_var *var)
 {
 	t_node	*head;
 	char	*str;
-	t_node	*tmp;
-	t_redir	*t;
 
 	head = NULL;
 	str = ft_clean_input(input);
