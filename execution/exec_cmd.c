@@ -79,7 +79,6 @@ void	help_exec_cmd(t_node *node, t_var *var)
 	path = get_path(node->cmd[0], var);
 	if (!path)
 	{
-		printf("here\n");
 		if (!check_slach(node->cmd[0], var))
 			chdild_exec_2(node->cmd[0], node->cmd, var);
 	}
