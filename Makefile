@@ -63,10 +63,10 @@ OBJS = ${SRCS:.c=.o}
 all : ${NAME}
 
 %.o : %.c ${HEADER}
-	${CC} ${CFLAG} -I ${READLINE_I} -c $< -o $@
+	${CC} ${CFLAGS} -I ${READLINE_I} -c $< -o $@
 
 ${NAME} : ${OBJS}
-	${CC} ${CFLAG} ${OBJS} -o ${NAME} -L ${READLINE_L} -lreadline
+	${CC} ${CFLAGS} ${OBJS} -o ${NAME} -L ${READLINE_L} -lreadline
 
 clean :
 	${RM} ${OBJS}
