@@ -14,15 +14,11 @@ char	*ft_wordred(char *line, int i, char red)
 		if (line[i] == '\'' || line[i] == '\"')
 		{
 			if (ft_protected_word(line, &i, &word_size, line[i]) == -1)
-				return (ft_print_syntax_error("unclosed quotes", NULL, -1), NULL);
-			word_size++;
-			i++;
+				return (ft_print_syntax_error("unclosed quotes", NULL, -1),
+					NULL);
 		}
-		else
-		{
-			i++;
-			word_size++;
-		}
+		i++;
+		word_size++;
 	}
 	str = ft_substr(line, start, word_size);
 	while (red == ' ' && start < i)
@@ -56,31 +52,6 @@ t_redir	*ft_create_red(char *line, int *i, t_token tok)
 	return (ft_create_rednode(file_name, tok));
 }
 
-// creation of the herdoc redirection linked list
-void	ft_heredoc_syntax(t_redir *red, t_var *var)
-{
-	t_redir *tmp_red;
-	t_redir	*tmp_herdoc;
-
-	tmp_red = red;
-	while (tmp_red)
-	{
-		if (tmp_red->tok == HEREDOC)
-		{
-			if (var->error_herdoc == NULL)
-				var->error_herdoc = ft_create_rednode(ft_strdup(tmp_red->file), HEREDOC);
-			else
-			{
-				tmp_herdoc = var->error_herdoc;
-				while (tmp_herdoc->rchild)
-					tmp_herdoc = tmp_herdoc->rchild;
-				tmp_herdoc->rchild = ft_create_rednode(ft_strdup(tmp_red->file), HEREDOC);
-			}
-		}
-		tmp_red = tmp_red->rchild;
-	}
-}
-
 // prepare the node command and add it to the linked list
 int	ft_prepare_cmd(char *line, int *i, t_node **head, t_var *var)
 {
@@ -101,6 +72,8 @@ int	ft_prepare_cmd(char *line, int *i, t_node **head, t_var *var)
 		else
 			(*i)++;
 	}
+	if (check_parentheses_error(&line[*i], var, red))
+		return (-1);
 	cmd = ft_wordred(line, j, '\0');
 	if (!cmd)
 		return (ft_heredoc_syntax(red, var), ft_free_red(red), -1);
@@ -109,7 +82,8 @@ int	ft_prepare_cmd(char *line, int *i, t_node **head, t_var *var)
 	return (ft_heredoc_syntax(red, var), 1);
 }
 
-// Tokenizes the input line and builds a linked list of commands with associated tokens and redirections.
+/* Tokenizes the input line and builds a linked list of commands
+with associated tokens and redirections.*/
 int	ft_build_cmds(char *line, t_node **head, t_var *var)
 {
 	int	i;
@@ -130,13 +104,40 @@ int	ft_build_cmds(char *line, t_node **head, t_var *var)
 					check_tok(line + prev_i), NULL));
 		}
 		else if (ft_check_delim(line, i) == -1)
-			return (ft_print_syntax_error("near unexpected token", "&", 1), var->status = 258, ft_free(head), -1);
+			return (ft_print_syntax_error("near unexpected token", "&", 1),
+				var->status = 258, ft_free(head), -1);
 		else
 			if (ft_prepare_cmd(line, &i, head, var) == -1)
 				return (var->status = 258, ft_free(head), -1);
 	}
 	return (0);
 }
+
+// main parsing function.
+t_node	*parsing(char *input, t_var *var)
+{
+	t_node	*head;
+	char	*str;
+	t_node	*tmp;
+	t_redir	*t;
+
+	head = NULL;
+	str = ft_clean_input(input);
+	if (!*str)
+		return (free(str), NULL);
+	if (!ft_first_check(str))
+		return (var->status = 258, NULL);
+	if (ft_build_cmds(str, &head, var) == -1)
+		return (free(str), NULL);
+	head = ft_infix_postfix(&head);
+	while (head->rchild)
+		head = head->rchild;
+	ft_build_tree(head);
+	free(str);
+	return (head);
+}
+
+/*
 
 // display the tree
 void displayTreeInorder(t_node *root) {
@@ -200,3 +201,4 @@ t_node	*parsing(char *input, t_var *var)
 	free(str);
 	return (head);
 }
+*/

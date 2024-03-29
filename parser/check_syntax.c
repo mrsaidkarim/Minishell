@@ -32,11 +32,27 @@ int	ft_skip_for_quotes(char *line, int *i)
 	return (ft_check_delim(line, *i));
 }
 
+/* Check if the character after a delimiter
+in the input line introduces a syntax error.*/
+int	ft_handle_delimiters(char *line, int *index)
+{
+	if ((ft_check_delim(line, *index) && check_tok(line + *index)
+			!= BRKT_OPEN) || !line[*index])
+	{
+		if (!line[*index])
+			return (ft_print_syntax_error("near unexpected token `newline'",
+					NULL, -1));
+		return (ft_print_syntax_error("near unexpected token",
+				&line[*index], 1), -1);
+	}
+	return (0);
+}
+
 // Check the syntax combination and validate the string after a delimiter.
-int	ft_check_syntax_combination(char *line, int *index, int *bclose, t_token tok)
+int	ft_check_syntax_combination(char *line, int *index,
+	int *bclose, t_token tok)
 {
 	*index += ft_check_delim(line, *index);
-
 	if (tok == BRKT_OPEN)
 	{
 		if (!*bclose)
@@ -52,13 +68,7 @@ int	ft_check_syntax_combination(char *line, int *index, int *bclose, t_token tok
 		(*index)++;
 	if (tok == BRKT_CLOSE)
 		return (0);
-	if ((ft_check_delim(line, *index) && check_tok(line + *index) != BRKT_OPEN)|| !line[*index])
-	{
-		if (!line[*index])
-			return (ft_print_syntax_error("near unexpected token `newline'", NULL, -1));
-		return (ft_print_syntax_error("near unexpected token", &line[*index], 1), -1);
-	}
-	return (0);
+	return (ft_handle_delimiters(line, index));
 }
 
 /* Check and find the length of a word (file name or command)
