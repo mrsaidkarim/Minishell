@@ -82,23 +82,18 @@ void	exec_cmd(t_node *node, t_var *var)
 		return ;
 	}
 	node->cmd = ft_expand(node->pre_cmd, var);
-	if (node->cmd && node->cmd[0])
+	if (node->cmd && node->cmd[0] && !is_builting(node->cmd, var))
 	{
-		if (!is_builting(node->cmd, var))
+		path = get_path(node->cmd[0], var);
+		if (!path)
 		{
-			path = get_path(node->cmd[0], var);
-			if (!path)
-			{
-				if (!check_slach(node->cmd[0], var))
-					chdild_exec_2(node->cmd[0], node->cmd, var);
-				return_in_out_fd(var);
-				return ;
-			}
-			else
-			{
-				chdild_exec(path, node->cmd, var);
-				free(path);
-			}
+			if (!check_slach(node->cmd[0], var))
+				chdild_exec_2(node->cmd[0], node->cmd, var);
+		}
+		else
+		{
+			chdild_exec(path, node->cmd, var);
+			free(path);
 		}
 	}
 	return_in_out_fd(var);
