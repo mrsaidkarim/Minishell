@@ -8,7 +8,10 @@ int	open_file(char *path, int flag, mode_t mode)
 	if (fd == -1)
 	{
 		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd(path, 2);
+		if (!path)
+			ft_putstr_fd(": No such file or directory\n", 2);
+		else
+			ft_putstr_fd(path, 2);
 		if (errno == ENOENT)
 			ft_putstr_fd(": No such file or directory\n", 2);
 		if (errno == EACCES)
