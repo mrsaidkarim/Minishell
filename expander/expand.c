@@ -6,7 +6,7 @@
 /*   By: zelabbas <zelabbas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 00:28:39 by zelabbas          #+#    #+#             */
-/*   Updated: 2024/03/30 00:28:40 by zelabbas         ###   ########.fr       */
+/*   Updated: 2024/03/30 16:51:30 by zelabbas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,28 @@ void	ft_join_char(t_exp *exp, char *prompt)
 		exp->bf1 = ft_strjoin_2(exp->bf1, ft_chartostr(prompt[exp->i]));
 }
 
+void	ft_help_dollr(char *s, t_exp *exp, t_var *var)
+{
+	if (!ft_strcmp(exp->bf2, "$") && s[exp->i] != '?')
+		exp->bf1 = ft_strjoin_2(exp->bf1, exp->bf2);
+	else
+	{
+		exp->bf1 = ft_strjoin_2(exp->bf1, ft_search_var(exp->bf2 + 1, var));
+		free(exp->bf2);
+	}
+	if (s[exp->i] == '?')
+	{
+		if (s[exp->i -1] == '$')
+			exp->bf1 = ft_strjoin_2(exp->bf1, ft_itoa(var->status));
+		else
+			exp->bf1 = ft_strjoin_2(exp->bf1, ft_chartostr(s[exp->i]));
+	}
+	else if (s[exp->i] && is_del(s[exp->i]) && s[exp->i] != '$'
+		&& (s[exp->i + 1] != '\0' && s[exp->i + 1] != ' '))
+		exp->bf1 = ft_strjoin_2(exp->bf1, ft_chartostr(s[exp->i]));
+	exp->bf2 = NULL;
+}
+
 void	ft_expand_var_dollr(t_exp *exp, char *s, t_var *var)
 {
 	while (s[exp->i] && s[exp->i] == '$')
@@ -68,19 +90,7 @@ void	ft_expand_var_dollr(t_exp *exp, char *s, t_var *var)
 				break ;
 			exp->i++;
 		}
-		if (!ft_strcmp(exp->bf2, "$") && s[exp->i] != '?')
-			exp->bf1 = ft_strjoin_2(exp->bf1, exp->bf2);
-		else
-		{
-			exp->bf1 = ft_strjoin_2(exp->bf1, ft_search_var(exp->bf2 + 1, var));
-			free(exp->bf2);
-		}
-		if (s[exp->i] == '?' && (s[exp->i + 1] == ' ' || !s[exp->i + 1]))
-			exp->bf1 = ft_strjoin_2(exp->bf1, ft_itoa(var->status));
-		else if (s[exp->i] && is_del(s[exp->i]) && s[exp->i] != '$'
-			&& (s[exp->i + 1] != '\0' && s[exp->i + 1] != ' '))
-			exp->bf1 = ft_strjoin_2(exp->bf1, ft_chartostr(s[exp->i]));
-		exp->bf2 = NULL;
+		ft_help_dollr(s, exp, var);
 	}
 }
 

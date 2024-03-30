@@ -6,7 +6,7 @@
 /*   By: zelabbas <zelabbas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 00:29:15 by zelabbas          #+#    #+#             */
-/*   Updated: 2024/03/30 00:29:16 by zelabbas         ###   ########.fr       */
+/*   Updated: 2024/03/30 17:35:23 by zelabbas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_env	*copy(t_var *var)
 	tmp = var->env;
 	while (tmp)
 	{
-		ft_add_env(&list_env, ft_creat_env(tmp->env,
+		ft_add_env(&list_env, ft_creat_env_exp(tmp->env,
 				ft_strdup(tmp->var), ft_strdup(tmp->content)));
 		tmp = tmp->next;
 	}

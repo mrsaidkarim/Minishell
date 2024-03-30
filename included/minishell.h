@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skarim <skarim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zelabbas <zelabbas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 00:32:45 by skarim            #+#    #+#             */
-/*   Updated: 2024/03/30 00:32:46 by skarim           ###   ########.fr       */
+/*   Updated: 2024/03/30 17:33:51 by zelabbas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,7 @@ void		ft_cd(t_var *var, char **cmd);
 char		*ft_strdup(const char *s1);
 void		allocate_error(char *str);
 t_env		*ft_creat_env(char *env, char *var, char *content);
+t_env		*ft_creat_env_exp(char *env, char *var, char *content);
 void		ft_add_env(t_env **head, t_env *new);
 void		ft_env(t_var *var);
 t_env		*ft_env_search(t_env *env, char *key);

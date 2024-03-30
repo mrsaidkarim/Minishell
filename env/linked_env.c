@@ -6,7 +6,7 @@
 /*   By: zelabbas <zelabbas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 00:28:14 by zelabbas          #+#    #+#             */
-/*   Updated: 2024/03/30 00:28:15 by zelabbas         ###   ########.fr       */
+/*   Updated: 2024/03/30 17:31:23 by zelabbas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,20 @@ t_env	*ft_creat_env(char *env, char *var, char *content)
 	}
 	else
 		node->content = content;
+	node->next = NULL;
+	return (node);
+}
+
+t_env	*ft_creat_env_exp(char *env, char *var, char *content)
+{
+	t_env	*node;
+
+	node = malloc(sizeof(t_env));
+	if (!node)
+		allocate_error(strerror(errno));
+	node->env = ft_strdup(env);
+	node->var = var;
+	node->content = content;
 	node->next = NULL;
 	return (node);
 }
