@@ -1,3 +1,4 @@
+
 #include "../included/minishell.h"
 
 char	*ft_get_envvar(t_var var, char *env_var)

@@ -1,10 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signals.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zelabbas <zelabbas@student.1337.ma>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/30 00:29:04 by zelabbas          #+#    #+#             */
+/*   Updated: 2024/03/30 00:29:09 by zelabbas         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../included/minishell.h"
 
-//*WTERMSIG(status) *// return the signal number
-/*WIFEXITED(status)  return true in case the 
-processes exit using call system exit(); */
-/*WIFSIGNALED is used to check if the proccess 
-terminated with a signal;*/
 int	update_status(int status)
 {
 	if (WIFSIGNALED(status))

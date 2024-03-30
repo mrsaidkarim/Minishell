@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zelabbas <zelabbas@student.1337.ma>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/30 00:28:02 by zelabbas          #+#    #+#             */
+/*   Updated: 2024/03/30 00:28:03 by zelabbas         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../included/minishell.h"
 
 bool	check_str_exp(char *s, t_var *var, int *index)
@@ -111,7 +123,7 @@ void	ft_export(t_var *var, char **cmd)
 			else
 				add_var_to_list(var->env, var_env, *cmd, i);
 			if (!ft_strcmp(var_env, "PATH"))
-					var->flag = 0;
+				var->flag = 0;
 			var->status = 0;
 		}
 	}
