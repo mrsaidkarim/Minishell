@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: skarim <skarim@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/30 00:17:05 by skarim            #+#    #+#             */
+/*   Updated: 2024/03/30 00:17:09 by skarim           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../included/minishell.h"
 
 // Return the operand file's name or the command string based on the flag 'red'.
@@ -134,69 +146,3 @@ t_node	*parsing(char *input, t_var *var)
 	free(str);
 	return (head);
 }
-
-/*
-
-// display the tree
-void displayTreeInorder(t_node *root) {
-    if (root != NULL) {
-        displayTreeInorder(root->lchild);
-        printf("|%s %d|", root->pre_cmd, root->tok);
-        displayTreeInorder(root->rchild);
-    }
-}
-
-t_node	*parsing(char *input, t_var *var)
-{
-	t_node	*head;
-	char	*str;
-	t_node 	*tmp;
-	t_redir	*t;
-
-	head = NULL;
-	str = ft_clean_input(input);
-	if (!*str)
-		return (free(str), NULL);
-	if (!ft_first_check(str))
-		return (var->status = 258, NULL);
-	if (ft_build_cmds(str, &head, var) == -1)
-		return (free(str), NULL);
-	printf("----------------------------\n");
-	tmp = head;
-	while (tmp)
-	{
-		printf("|%s %d|, red:", tmp->pre_cmd, tmp->tok);
-		t = tmp->redirections;
-		while (t)
-		{
-			printf("%s|,", t->file);
-			t = t->rchild;
-		}
-		printf("\n");
-		tmp = tmp->rchild;
-	}
-	head = ft_infix_postfix(&head);
-	printf("-----------post_fix---------\n");
-	tmp = head;
-	while (tmp)
-	{
-		printf("|%s %d|, red:", tmp->pre_cmd, tmp->tok);
-		t = tmp->redirections;
-		while (t)
-		{
-			printf("%s|,", t->file);
-			t = t->rchild;
-		}
-		printf("\n");
-		tmp = tmp->rchild;
-	}
-	printf("------------tree------------\n");
-	while(head->rchild)
-		head = head->rchild;
-	ft_build_tree(head);
-	displayTreeInorder(head);
-	printf("\n--------------------------\n");
-	free(str);
-	return (head);
-}
-*/

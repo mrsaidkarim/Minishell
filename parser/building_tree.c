@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   building_tree.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: skarim <skarim@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/30 00:19:14 by skarim            #+#    #+#             */
+/*   Updated: 2024/03/30 00:19:17 by skarim           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../included/minishell.h"
 
 // Recursively transforms a binary tree according to specified conditions.
