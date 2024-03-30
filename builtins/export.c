@@ -111,7 +111,7 @@ void	ft_export(t_var *var, char **cmd)
 			else
 				add_var_to_list(var->env, var_env, *cmd, i);
 			if (!ft_strcmp(var_env, "PATH"))
-					var->flag = 0;
+				var->flag = 0;
 			var->status = 0;
 		}
 	}
