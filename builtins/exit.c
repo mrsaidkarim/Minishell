@@ -6,7 +6,7 @@
 /*   By: zelabbas <zelabbas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 00:27:53 by zelabbas          #+#    #+#             */
-/*   Updated: 2024/03/30 00:27:54 by zelabbas         ###   ########.fr       */
+/*   Updated: 2024/03/31 18:39:54 by zelabbas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,24 @@ int	nbr_arg(char **av)
 	return (i);
 }
 
+int	check_v2(char *str)
+{
+	int check = 0;
+	int i = 0;
+	while (str[i])
+	{
+		if (str[i] == '-')
+			i++;
+		if (!(str[i] >= '0' && str[i] <= '9'))
+			return (0);
+		i++;
+	}
+	ft_atoll(str, &check);
+	if (check != 0)
+		return (0);
+	return (1);
+}
+
 // is used to minimizing function ft_exit
 void	handle_d_arg(t_var *var, char **cmd)
 {
@@ -78,7 +96,7 @@ void	handle_d_arg(t_var *var, char **cmd)
 		printf("exit\n");
 		exit (0);
 	}
-	else if (nbr > 2 && is_digit(cmd))
+	else if (nbr > 2 && check_v2(cmd[1]))
 	{
 		errors_exit(cmd[1], 1);
 		var->status = 1;
